@@ -69,9 +69,8 @@ int status; /* för returvärden från child-processer */
  /* Härefter finner du koden :) */
 
  void run(filter_t *curr_filter) {
-    /* Start with the given command, then successively try each fallback. */
     filter_t *filter = curr_filter;
-    while (filter) {
+    while (filter) { /* kör execvp() på valt filter, om fel inträffas kör dess alternativa filter */
         if (filter->file) {
             execvp(filter->file, filter->argv);
             /* om vi når denna rad har execvp misslyckats */
@@ -86,7 +85,7 @@ int status; /* för returvärden från child-processer */
     }
 }
 
-void dupe(int old_fileno, int new_fileno);
+void dupe(int old_fileno, int new_fileno){
     if(old_fileno == new_fileno)
     { /* för första nivån av rekursionen vill vi inte kopiera  från stdin till stdin */
         return;       
