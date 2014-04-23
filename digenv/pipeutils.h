@@ -1,14 +1,14 @@
 #ifndef PIPEUTILS_H
 #define PIPEUTILS_H
 
-#include <sys/types.h> 		/* definierar bland annat typen pid_t */
-#include <sys/wait.h> 		/* definierar bland annat WIFEXITED */
-#include <errno.h> 			/* definierar felkontrollvariabeln errno */
-#include <stdio.h> 			/* definierar stderr, dit felmeddelanden skrivs */
-#include <stdlib.h> 		/* definierar bland annat exit() */
-#include <unistd.h> 		/* definierar bland annat fork() */
-#include <stdbool.h>		/* definierar primitiva typen bool */
-#include <string.h>			/* definierar strings */
+#include <sys/types.h>      /* definierar bland annat typen pid_t */
+#include <sys/wait.h>       /* definierar bland annat WIFEXITED */
+#include <errno.h>          /* definierar felkontrollvariabeln errno */
+#include <stdio.h>          /* definierar stderr, dit felmeddelanden skrivs */
+#include <stdlib.h>         /* definierar bland annat exit() */
+#include <unistd.h>         /* definierar bland annat fork() */
+#include <stdbool.h>        /* definierar primitiva typen bool */
+#include <string.h>         /* definierar strings */
 
 #define READ 0
 #define WRITE 1
@@ -24,7 +24,7 @@ int status; /* för returvärden från child-processer */
  * finns kan den hålla en pekare till ett sekundärt alternativ.
  */
  typedef struct filter_s {
-    const char * file;          	/* Filter att exekevera */
+    const char * file;              /* Filter att exekevera */
     struct filter_s *next_filter;   /* Pekare till nästa pipeline filter */
     struct filter_s *secondary;     /* Pekare till ett andrahandsval om inte filtret finns */
     char * const *argv;             /* array av argument som avslutas med NULL-terminator */
