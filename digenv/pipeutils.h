@@ -30,8 +30,6 @@ int status; /* för returvärden från child-processer */
     char * const *argv;             /* array av argument som avslutas med NULL-terminator */
  } filter_t;
 
- void pipe_arg(filter_t *f, int in);
-
 /**
  * Kör ett filter
  *
@@ -41,6 +39,35 @@ int status; /* för returvärden från child-processer */
  * In: filter_t
  * 
  */
+ void run(filter_t *curr_filter);
+
+/**
+ * dupe() ersätter std-in/out med duplicerad läs/skriv-ände på pipen.
+ * Om den gamla och nya gamla läs/skriv-änden är samma ignoreras 
+ * denna funktion.
+ */
+ void dupe(int old_fileno, int new_fileno);
+
+/**
+ * hold() körs i parent-processen och väntar
+ * på att child-processen ska köras klart innan
+ * parent-processen kör resterande kod.
+ */
+ void hold(int pid);
+
+/**
+ * pipe_arg() skapar en pipeline mellan flera filter som specificeras
+ * delvis i runtime som startargument och hårdkodat.
+ *
+ * Funktionen anropas rekursivt för varje filter och next_filter och skapar 
+ * en pipe med given filbeskrivare. If at some point an error
+ * is encountered, an error message is printed and the recursion stops.
+ */
+ void pipe_arg(filter_t *f, int in);
+
+
+ /* Härefter finner du koden :) */
+
  void run(filter_t *curr_filter) {
     /* Start with the given command, then successively try each fallback. */
     filter_t *filter = curr_filter;
@@ -59,12 +86,7 @@ int status; /* för returvärden från child-processer */
     }
 }
 
-/**
- * dupe ersätter std-in/out med duplicerad läs/skriv-ände på pipen.
- * Om den gamla och nya gamla läs/skriv-änden är samma ignoreras 
- * denna funktion.
- */
- void dupe(int old_fileno, int new_fileno) {
+void dupe(int old_fileno, int new_fileno);
     if(old_fileno == new_fileno)
     { /* för första nivån av rekursionen vill vi inte kopiera  från stdin till stdin */
         return;       
@@ -102,17 +124,6 @@ void hold(int pid){
     }
 }
 
-
-/**
- *  
- * pipe_arg skapar en pipeline mellan flera filter som specificeras
- * delvis i runtime som startargument och hårdkodat.
- *
- * Funktionen anropas rekursivt för varje filter och next_filter och skapar 
- * en pipe med given filbeskrivare. If at some point an error
- * is encountered, an error message is printed and the recursion stops.
- */
- 
  void pipe_arg(filter_t *filter, int in) {
     int pfd[2];
 
