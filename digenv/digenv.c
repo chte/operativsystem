@@ -4,8 +4,8 @@
  * Name:        digenv - A small program to print envoriement variabels
  *
  * Desciption:  The program will do the same thing as printenv | sort | $PAGER
-                if no input arguements is pased by. If inputarguments is provieded
-                the program will execute as printev | grep <args> | sort | $PAGER
+ *              if no input arguements is pased by. If inputarguments is provieded
+ *              the program will execute as printev | grep <args> | sort | $PAGER
  *
  * Authors:     Christopher Teljstedt   (chte@kth.se)
  *              Carl Eriksson           (carerik@kth.se)
@@ -13,6 +13,8 @@
  * Syntax:      digenv <args>
  * 
  * Example:     digenv HOME
+ *
+ * See also:    
  * 
  */
 
