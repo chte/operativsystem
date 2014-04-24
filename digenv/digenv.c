@@ -1,5 +1,3 @@
-/* INSERT META COMMENT HERE */
-
 /*
  * Name:        digenv - A small program to print envoriement variabels
  *
