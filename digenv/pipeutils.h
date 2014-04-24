@@ -28,7 +28,12 @@ int status; /* för returvärden från child-processer */
     struct filter_s *next_filter;   /* Pekare till nästa pipeline filter */
     struct filter_s *secondary;     /* Pekare till ett andrahandsval om inte filtret finns */
     char * const *argv;             /* array av argument som avslutas med NULL-terminator */
+    int arg;                        /* cmd argument */
  } filter_t;
+
+
+
+
 
 /**
  * Kör ett filter
@@ -53,7 +58,7 @@ int status; /* för returvärden från child-processer */
  * på att child-processen ska köras klart innan
  * parent-processen kör resterande kod.
  */
- void hold(int pid);
+void hold(int pid, filter_t *f);
 
 /**
  * pipe_arg() skapar en pipeline mellan flera filter som specificeras
@@ -98,14 +103,21 @@ void dupe(int old_fileno, int new_fileno){
     }
 }
 
-void hold(int pid){
+void hold(int pid, filter_t *f){
     wait(&status);
     if( WIFEXITED( status ) ) 
     { /* child-processen har kört klart */
         if( !WEXITSTATUS( status ) ) 
         {  /* child-processen kördes klart utan problem */
             return; /* återvänd som no-op */
-        } 
+        } else if( !f->arg ) 
+        /* kolla så arg inte är satt till 1, 
+           isåfall kör grep med en eller flera 
+           parametrar */
+        { /* fel inträffade i child-processen */
+            fprintf( stderr, "Child (pid %ld) failed with exit code %d\n", (long int) pid, WEXITSTATUS( status ) );
+            exit( 1 ); /* exit() ej pålitlig i child-processer så _exit() måste användas */
+        }
     } 
     else 
     {
@@ -160,7 +172,7 @@ void hold(int pid){
         if (pid == -1) /* misslyckades att skapa en child-process */
             { perror( "fork() failed" ); exit( 1 ); }
 
-        hold(pid);
+        hold(pid,filter);
 
         if (close(pfd[WRITE])) /* stäng nuvarande filbeskrivares skrivände */
             { fprintf( stderr, "close() failed" ); exit( 1 ); }
