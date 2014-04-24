@@ -25,12 +25,12 @@ int main(int argc, char **argv) {
     char *pagerenv = getenv("PAGER");
     
     /*                      filter      next    sec      NULL-terminated argv          */
-    filter_t more       = { "more",     NULL,   NULL,   (char *[]) {"more",     NULL} };
-    filter_t less       = { "less",     NULL,   &more,  (char *[]) {"less",     NULL} };
-    filter_t pager      = {  pagerenv,  NULL,   &less,  (char *[]) { pagerenv,  NULL} };
-    filter_t sort       = { "sort",     &pager, NULL,   (char *[]) {"sort",     NULL} };
-    filter_t grep       = { "grep",     &sort,  NULL,   argv,                         };
-    filter_t printenv   = { "printenv", &sort,  NULL,   (char *[]) {"printenv", NULL} };
+    filter_t more       = { "more",     NULL,   NULL,   (char *[]) {"more",     NULL}, 0 };
+    filter_t less       = { "less",     NULL,   &more,  (char *[]) {"less",     NULL}, 0 };
+    filter_t pager      = {  pagerenv,  NULL,   &less,  (char *[]) { pagerenv,  NULL}, 0 };
+    filter_t sort       = { "sort",     &pager, NULL,   (char *[]) {"sort",     NULL}, 0 };
+    filter_t grep       = { "grep",     &sort,  NULL,   argv                         , 1 };
+    filter_t printenv   = { "printenv", &sort,  NULL,   (char *[]) {"printenv", NULL}, 0 };
     
 
     if (argc > 1) 
