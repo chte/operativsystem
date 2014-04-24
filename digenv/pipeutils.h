@@ -102,16 +102,10 @@ void hold(int pid){
     wait(&status);
     if( WIFEXITED( status ) ) 
     { /* child-processen har kört klart */
-        int child_status = WEXITSTATUS( status );
-        if( child_status == 0  ) 
+        if( !WEXITSTATUS( status ) ) 
         {  /* child-processen kördes klart utan problem */
             return; /* återvänd som no-op */
         } 
-        else 
-        { /* fel inträffade i child-processen */
-            fprintf( stderr, "Child (pid %ld) failed with exit code %d\n", (long int) pid, child_status );
-            _exit( 1 ); /* exit() ej pålitlig i child-processer så _exit() måste användas */
-        }
     } 
     else 
     {
