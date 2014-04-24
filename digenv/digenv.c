@@ -10,9 +10,7 @@
  *
  * Syntax:      digenv <args>
  * 
- * Example:     digenv HOME
- *
- * See also:    
+ * Example:     digenv HOME GOROOT
  * 
  */
 
