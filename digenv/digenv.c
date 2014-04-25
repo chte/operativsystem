@@ -23,7 +23,7 @@
 #include <unistd.h>
 
 int main(int argc, char **argv) {
-    /* Get pager from environment variables if defined */
+    /* hämta pager från environmentvariablerna */
     char *pagerenv = getenv("PAGER");
     
     /*                      filter      next    sec      NULL-terminated argv       has args */
