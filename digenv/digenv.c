@@ -2,8 +2,9 @@
  * Name:        digenv - A small program to print environment variabels
  *
  * Desciption:  The program will do the same thing as printenv | sort | $PAGER
-                if no input arguments are given. If input arguments is provieded
-                the program will execute as printev | grep <args> | sort | $PAGER
+ *              if no input arguments are given. If input arguments are provided
+ *              the program will execute as printev | grep <args> | sort | $PAGER
+ *
  *
  * Authors:     Christopher Teljstedt   (chte@kth.se)
  *              Carl Eriksson           (carerik@kth.se)

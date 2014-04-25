@@ -23,14 +23,13 @@ int status; /* för returvärden från child-processer */
  * samt en pekare till nästa filter i pipeline-flödet. Om filtret inte 
  * finns kan den hålla en pekare till ett sekundärt alternativ.
  */
- typedef struct filter_s {
+typedef struct filter_s {
     const char * file;              /* Filter att exekevera */
     struct filter_s *next_filter;   /* Pekare till nästa pipeline filter */
     struct filter_s *secondary;     /* Pekare till ett andrahandsval om inte filtret finns */
     char * const *argv;             /* array av argument som avslutas med NULL-terminator */
     int arg;                        /* cmd argument */
  } filter_t;
-
 
 /**
  * run() kör ett givet filter
@@ -41,7 +40,7 @@ int status; /* för returvärden från child-processer */
  * In: filter_t, filtret som ska exekeveras
  * 
  */
- void run(filter_t *curr_filter);
+void run(filter_t *curr_filter);
 
 /**
  * dupe() ersätter std-in/out med duplicerad läs/skriv-ände på pipen.
@@ -51,7 +50,7 @@ int status; /* för returvärden från child-processer */
  * In: int, filnumret till änden av pipen som ska kopieras ifrån
  *     int, filnumret dit änden ska kopieras till
  */
- void dupe(int old_fileno, int new_fileno);
+void dupe(int old_fileno, int new_fileno);
 
 /**
  * hold() körs i parent-processen och väntar
@@ -75,12 +74,12 @@ void hold(int pid, filter_t *f);
  *     int, filnummret till läsänden av en pipe.
  *
  */
- void pipe_arg(filter_t *f, int in);
+void pipe_arg(filter_t *f, int in);
 
 
- /* Härefter finner du koden :) */
+/* Härefter finner du koden :) */
 
- void run(filter_t *curr_filter) {
+void run(filter_t *curr_filter) {
     filter_t *filter = curr_filter;
     while (filter) { /* kör execvp() på valt filter, om fel inträffas kör dess alternativa filter */
         if (filter->file) {
@@ -136,7 +135,7 @@ void hold(int pid, filter_t *f){
     }
 }
 
- void pipe_arg(filter_t *filter, int in) {
+void pipe_arg(filter_t *filter, int in) {
     int pfd[2];
 
     if (filter->next_filter == NULL) 
