@@ -32,16 +32,13 @@ int status; /* för returvärden från child-processer */
  } filter_t;
 
 
-
-
-
 /**
- * Kör ett filter
+ * run() kör ett givet filter
  *
  * Funktionen kör execvp() på givna filtret. Om filtret inte finns
  * körs dess sekundära alternativ osv. Filter som är null hoppas över.
  *
- * In: filter_t
+ * In: filter_t, filtret som ska exekeveras
  * 
  */
  void run(filter_t *curr_filter);
@@ -50,6 +47,9 @@ int status; /* för returvärden från child-processer */
  * dupe() ersätter std-in/out med duplicerad läs/skriv-ände på pipen.
  * Om den gamla och nya gamla läs/skriv-änden är samma ignoreras 
  * denna funktion.
+ * 
+ * In: int, filnumret till änden av pipen som ska kopieras ifrån
+ *     int, filnumret dit änden ska kopieras till
  */
  void dupe(int old_fileno, int new_fileno);
 
@@ -57,6 +57,9 @@ int status; /* för returvärden från child-processer */
  * hold() körs i parent-processen och väntar
  * på att child-processen ska köras klart innan
  * parent-processen kör resterande kod.
+ *
+ * In: int, barnets processor-id
+ *     filter_t, filtret som ska köras
  */
 void hold(int pid, filter_t *f);
 
@@ -65,8 +68,12 @@ void hold(int pid, filter_t *f);
  * delvis i runtime som startargument och hårdkodat.
  *
  * Funktionen anropas rekursivt för varje filter och next_filter och skapar 
- * en pipe med given filbeskrivare. If at some point an error
- * is encountered, an error message is printed and the recursion stops.
+ * en pipe med given filbeskrivare. Vid fel, skrivs ett 
+ * felmeddlande ut och programmet stängs av med exit-kod 1.
+ *
+ * In: filter_t, en pekare till filter som ska köras.
+ *     int, filnummret till läsänden av en pipe.
+ *
  */
  void pipe_arg(filter_t *f, int in);
 
@@ -92,7 +99,7 @@ void hold(int pid, filter_t *f);
 
 void dupe(int old_fileno, int new_fileno){
     if(old_fileno == new_fileno)
-    { /* för första nivån av rekursionen vill vi inte kopiera  från stdin till stdin */
+    { /* för första nivån av rekursionen vill vi inte kopiera från stdin till stdin */
         return;       
     } 
 
