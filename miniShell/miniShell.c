@@ -47,9 +47,23 @@ int main(int argc, char **argv) {
     		int ret;
     		ret = chdir(token);
 
+    		/* Sökvägen användaren fanns inte */
     		if(ret != 0){
     			printf("Couldn't find directory, changing to HOME\n");
+   				/* Byt till hem katalogen som defineras av HOME variablen */
     			ret = chdir(getenv("HOME"));
+    			/* Fanns ingen HOME variable -> gör inget */
+    			if (ret != 0){
+    				printf("Couldn't find HOME variable\n");
+    			} 
+    			/* Byte till HOME katalogen */
+    			else {
+    				printf("Changed to %s\n",getenv("HOME"));
+    			}
+    		}
+    		/* Sökvägen fanns */
+    		else {
+    			printf("Changed to %s\n",token);
     		}
 
     		/*printf("Change the directori\n"); */
