@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <unistd.h>
+#include <unistd.h>			/* Används av chdir som exempel */
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>       /* definierar bland annat WIFEXITED */
@@ -14,6 +14,9 @@ int main(int argc, char **argv) {
 	char word[70];
 	int count = 1;
 
+	/* Mellanslag som används som token för strtok() */
+	const char splitToken[2] = " ";
+
 	/* Skriv ut en välkomns text som beskriver vad man kan göra */
 	printf("Welcome to miniShell!\n");
 	printf("    Build in commands:\n");
@@ -24,17 +27,36 @@ int main(int argc, char **argv) {
 
 	/* Ta emot indata från användaren */
 	while (fgets(word, sizeof(word), stdin) != NULL){
-        count = strlen(word);
-        word[--count] = '\0'; /*discard the newline character*/
-        /*printf("Command to execute: %s %d\n",  word, count);*/
+        count = strlen(word); /* Längden för kommandot */
+        word[--count] = '\0';  /* Ta bort new line tecknet*/
 
-        /* Om användaren skrev in exit vill den sluta så gör en break */
-        if(strcmp(word,"exit") == 0){
+		char *token;
+		/* get the first token */
+   		token = strtok(word, splitToken);
+
+        /* Exit - användaren vill sluta*/
+        if(strcmp(token,"exit") == 0){
        	 	printf("Exiting...\n");
        	 	break;
     	}
+    	/* cd - byta map */
+    	else if(strcmp(token, "cd") == 0){
+    		/* Hämta andra argumentet */
+    		token = strtok(NULL, splitToken);
+
+    		int ret;
+    		ret = chdir(token);
+
+    		if(ret != 0){
+    			printf("Couldn't find directory, changing to HOME\n");
+    			ret = chdir(getenv("HOME"));
+    		}
+
+    		/*printf("Change the directori\n"); */
+    	}
+    	/* Användaren vill köra ett vanligt kommando */
     	else {
-    		char *cmd[] = {word,NULL};
+    		char *cmd[] = {token,NULL};
     		executeForeGround(cmd);
     	}
     }
