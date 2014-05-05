@@ -41,10 +41,11 @@ int main(int argc, char **argv) {
     	}
     	/* cd - byta map */
     	else if(strcmp(token, "cd") == 0){
-    		/* Hämta andra argumentet */
+    		/* Hämta andra argumentet, dvs sökvägen användaren vill byta till */
     		token = strtok(NULL, splitToken);
 
     		int ret;
+    		/* Prova att ändra map efter användarens önskemål */
     		ret = chdir(token);
 
     		/* Sökvägen användaren fanns inte */
@@ -65,12 +66,23 @@ int main(int argc, char **argv) {
     		else {
     			printf("Changed to %s\n",token);
     		}
-
-    		/*printf("Change the directori\n"); */
     	}
     	/* Användaren vill köra ett vanligt kommando */
     	else {
-    		char *cmd[] = {token,NULL};
+    		char *cmd[6]; /* = {token,NULL}; */
+    		cmd[0] = token;
+    		int i = 1;
+
+    		/* walk through other tokens */
+    		while(token != NULL && i < 6){
+    			/* printf("%s\n", token); */
+    			token = strtok(NULL, splitToken);
+
+    			cmd[i] = token;
+    			++i;
+    		}
+    		/* cmd[0] = token;
+    		cmd[1] = NULL; */
     		executeForeGround(cmd);
     	}
     }
