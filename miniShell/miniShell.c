@@ -5,6 +5,8 @@
 #include <sys/wait.h>       /* definierar bland annat WIFEXITED */
 #include <stdio.h>			/* för kunna använda fget för indata från användaren */
 #include <string.h>         /* definierar strings */
+#include <time.h>
+#include <sys/time.h>
 
 
 void executeForeGround(char**);
@@ -69,39 +71,49 @@ int main(int argc, char **argv) {
     	}
     	/* Användaren vill köra ett vanligt kommando */
     	else {
-    		char *cmd[6]; /* = {token,NULL}; */
-    		cmd[0] = token;
-    		int i = 1;
+    		char *cmd[7]; /* = {token,NULL}; */
+    		cmd[0] = token; /* Sätt första token som redan är parsat */
+    		int i = 1; 
 
-    		/* walk through other tokens */
+    		/* Hämta ut resten av alla tokens */
     		while(token != NULL && i < 6){
     			/* printf("%s\n", token); */
+    			/* Ta ut nästa token */
     			token = strtok(NULL, splitToken);
-
+    			/* Spar ner det som in parameter */
     			cmd[i] = token;
-    			++i;
+    			i++;
     		}
-    		/* cmd[0] = token;
-    		cmd[1] = NULL; */
+    		/* Sätt det sista parameter till NULL */
+    		cmd[i] = NULL;
+    		/* Kör kommandot */
     		executeForeGround(cmd);
     	}
     }
 
-     exit(0);
+    /* Avsluta programmet med korrekt exit code */
+    exit(0);
 }
 
 void executeForeGround(char **cmd){
 	pid_t pid;
+	struct timeval start, end;
+
 	pid = fork();
 	if (pid == 0){
+		
 		execvp(cmd[0], cmd);
      	
 		printf("Unknown command\n");
 	}
 	else{
 		int status = 0;
+		printf("Spawned foreground process pid: %d\n",pid);
+		gettimeofday(&start, NULL);
 		int childId = wait(&status);
-		printf ("Child process(id %d) is returned with status: %d.\n",childId,status);
+		gettimeofday(&end, NULL);
+		printf("Foreground process %d terminated\n",childId);
+		printf("wallclock time: %lf\n", (((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000.0));
 	}
 
 	return;
