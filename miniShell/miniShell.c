@@ -92,11 +92,11 @@ int main(int argc, char **argv) {
     		/* Titta om programmet ska köras i bakgrunden eller köras vanligt */
     		if(strcmp(cmd[i-2],"&") == 0){
     			/* Kör kommandot som background */
-    			executeForeGround(cmd,0);
+    			executeForeGround(cmd,1);
     		}
     		else {
     			/* Kör kommandot som foreground */
-    			executeForeGround(cmd,1);
+    			executeForeGround(cmd,0);
     		}
     	}
     	/* Skriv ut promt tecknet till terminalen */
@@ -109,21 +109,34 @@ int main(int argc, char **argv) {
 void executeForeGround(char **cmd,int background){
 	pid_t pid;
 	struct timeval start, end;
+	/* Kör den som en foreground process */
+	/* if(background == 0){ */
+		pid = fork();
+		if (pid == 0){
+			execvp(cmd[0], cmd);
+			printf("Unknown command\n");
+		}
+		else{
+			int status = 0;
+			printf("Spawned foreground process pid: %d\n",pid);
+			gettimeofday(&start, NULL);
+			int childId = 0;
+			if(background == 0){
+				childId = waitpid(-1, &status, 0); /* wait(&status); */
+			} else {
+				printf("Background\n");
+				childId = waitpid(-1, &status, WNOHANG);
+			}
+			
+			gettimeofday(&end, NULL);
+			printf("Foreground process %d terminated\n",childId);
+			printf("wallclock time: %lf\n", (((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000.0));
+		}
+	/*}
+	 Kör den som en background process 
+	else {
 
-	pid = fork();
-	if (pid == 0){
-		execvp(cmd[0], cmd);
-		printf("Unknown command\n");
-	}
-	else{
-		int status = 0;
-		printf("Spawned foreground process pid: %d\n",pid);
-		gettimeofday(&start, NULL);
-		int childId = wait(&status);
-		gettimeofday(&end, NULL);
-		printf("Foreground process %d terminated\n",childId);
-		printf("wallclock time: %lf\n", (((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000.0));
-	}
+	} */
 
 	return;
 }
