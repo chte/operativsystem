@@ -9,7 +9,7 @@
 #include <sys/time.h>
 
 
-void executeForeGround(char**);
+void executeForeGround(char**,int);
 
 int main(int argc, char **argv) {
 
@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
 	printf("     - <any command supported by your OS, i.e ls>\n");
 	printf("     - cd <folder path>\n");
 	printf("     - exit\n");
+	printf("> ");
 
 
 	/* Ta emot indata från användaren */
@@ -84,26 +85,34 @@ int main(int argc, char **argv) {
     			cmd[i] = token;
     			i++;
     		}
+
     		/* Sätt det sista parameter till NULL */
     		cmd[i] = NULL;
-    		/* Kör kommandot */
-    		executeForeGround(cmd);
-    	}
-    }
 
+    		/* Titta om programmet ska köras i bakgrunden eller köras vanligt */
+    		if(strcmp(cmd[i-2],"&") == 0){
+    			/* Kör kommandot som background */
+    			executeForeGround(cmd,0);
+    		}
+    		else {
+    			/* Kör kommandot som foreground */
+    			executeForeGround(cmd,1);
+    		}
+    	}
+    	/* Skriv ut promt tecknet till terminalen */
+    	printf("> ");
+    }    
     /* Avsluta programmet med korrekt exit code */
     exit(0);
 }
 
-void executeForeGround(char **cmd){
+void executeForeGround(char **cmd,int background){
 	pid_t pid;
 	struct timeval start, end;
 
 	pid = fork();
 	if (pid == 0){
-		
 		execvp(cmd[0], cmd);
-     	
 		printf("Unknown command\n");
 	}
 	else{
