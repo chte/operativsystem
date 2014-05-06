@@ -8,13 +8,33 @@
 #include <time.h>
 #include <sys/time.h>
 
+int status; /* för returvärden från child-processer */
+
 
 void executeForeGround(char**,int);
 void checkStatus(int,int,int);
 
+
+int hold(){
+    int pid = waitpid(-1, &status, WNOHANG);
+
+    if(pid > 0 ){
+    	checkStatus(status, 1, pid);
+    }else {
+    	return 0;
+    }
+
+    return pid + 1;
+}
+
+static const char *WS = " \t\n"; 
+
+
 int main(int argc, char **argv) {
 
 	char word[70];
+	printf("s%se", word);
+
 	int count = 1;
 
 	/* Mellanslag som används som token för strtok() */
@@ -22,15 +42,19 @@ int main(int argc, char **argv) {
 
 	/* Skriv ut en välkomns text som beskriver vad man kan göra */
 	printf("Welcome to miniShell!\n");
-	printf("    Build in commands:\n");
+	printf("    Commands:\n");
 	printf("     - <any command supported by your OS, i.e ls>\n");
 	printf("     - cd <folder path>\n");
 	printf("     - exit\n");
 	printf("> ");
 
-
 	/* Ta emot indata från användaren */
 	while (fgets(word, sizeof(word), stdin) != NULL){
+		if(strspn(word, WS) == strlen(word)) {
+			printf("> ");
+			continue;
+		}   
+
         count = strlen(word); /* Längden för kommandot */
         word[--count] = '\0';  /* Ta bort new line tecknet*/
 
@@ -87,8 +111,6 @@ int main(int argc, char **argv) {
     			i++;
     		}
 
-    		
-
     		/* Titta om programmet ska köras i bakgrunden eller köras vanligt */
     		if(strcmp(cmd[i-2],"&") == 0){
     			/* Sätt det sista parameter till NULL */
@@ -103,6 +125,10 @@ int main(int argc, char **argv) {
     			executeForeGround(cmd,0);
     		}
     	}
+
+   		/* Titta på ändringar hos möjliga barn processer*/
+   		while( hold() ){ }
+
     	/* Skriv ut promt tecknet till terminalen */
     	printf("> ");
     }    
@@ -120,16 +146,17 @@ void executeForeGround(char **cmd,int background){
 	}
 	else{
 		int status = 0;
+		int copyBackground = background;
 		
 		int childId = 0;
-		if(background == 0){
+		if(copyBackground == 0){
 			printf("Spawned foreground process pid: %d\n",pid);
 
 			gettimeofday(&start, NULL);
-			childId = waitpid(-1, &status, 0);
+			childId = waitpid(pid, &status, 0);
 			gettimeofday(&end, NULL);
 
-			checkStatus(status,background,childId);
+			checkStatus(status,copyBackground,childId);
 			
 			printf("wallclock time: %lf\n", (((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000.0));
 		} else {
