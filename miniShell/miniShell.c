@@ -7,13 +7,14 @@
 #include <string.h>         /* definierar strings */
 #include <time.h>
 #include <sys/time.h>
+#include <signal.h>
 
 int status; /* för returvärden från child-processer */
-
 
 void executeForeGround(char**,int);
 void checkStatus(int,int,int);
 
+void INThandler();
 
 int hold(){
     int pid = waitpid(-1, &status, WNOHANG);
@@ -31,6 +32,7 @@ static const char *WS = " \t\n";
 
 
 int main(int argc, char **argv) {
+	signal(SIGINT, SIG_IGN);
 
 	char word[70];
 	printf("s%se", word);
@@ -50,6 +52,8 @@ int main(int argc, char **argv) {
 
 	/* Ta emot indata från användaren */
 	while (fgets(word, sizeof(word), stdin) != NULL){
+		while( hold() ){ }
+
 		if(strspn(word, WS) == strlen(word)) {
 			printf("> ");
 			continue;
@@ -125,37 +129,38 @@ int main(int argc, char **argv) {
     			executeForeGround(cmd,0);
     		}
     	}
+		while( hold() ){ }
 
    		/* Titta på ändringar hos möjliga barn processer*/
-   		while( hold() ){ }
+		printf("> ");
 
-    	/* Skriv ut promt tecknet till terminalen */
-    	printf("> ");
     }    
     /* Avsluta programmet med korrekt exit code */
     exit(0);
 }
+
+
 
 void executeForeGround(char **cmd,int background){
 	pid_t pid;
 	struct timeval start, end;
 	pid = fork();
 	if (pid == 0){
+		signal(SIGINT, INThandler);
 		execvp(cmd[0], cmd);
 		printf("Unknown command\n");
 	}
 	else{
 		int status = 0;
 		int copyBackground = background;
-		
 		int childId = 0;
 		if(copyBackground == 0){
 			printf("Spawned foreground process pid: %d\n",pid);
 
+
 			gettimeofday(&start, NULL);
 			childId = waitpid(pid, &status, 0);
 			gettimeofday(&end, NULL);
-
 			checkStatus(status,copyBackground,childId);
 			
 			printf("wallclock time: %lf\n", (((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000.0));
@@ -167,6 +172,11 @@ void executeForeGround(char **cmd,int background){
 	return;
 }
 
+void INThandler(){
+	_exit(2);
+}
+
+
 void checkStatus(int status,int background,int childId){
 	if (WIFEXITED(status)) {
 		/* printf("exited, status=%d\n", WEXITSTATUS(status)); */
@@ -177,7 +187,12 @@ void checkStatus(int status,int background,int childId){
 			printf("Background process %d terminated\n",childId);
 		}
 	} else if (WIFSIGNALED(status)) {
-		printf("killed by signal %d\n", WTERMSIG(status));
+		if(background == 0){
+			printf("Foreground process %d terminated\n",childId);
+		}
+		else{
+			printf("Background process %d terminated\n",childId);
+		}
 	} else if (WIFSTOPPED(status)) {
 		printf("stopped by signal %d\n", WSTOPSIG(status));
 	} else if (WIFCONTINUED(status)) {
