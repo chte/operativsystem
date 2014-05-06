@@ -87,15 +87,18 @@ int main(int argc, char **argv) {
     			i++;
     		}
 
-    		/* Sätt det sista parameter till NULL */
-    		cmd[i] = NULL;
+    		
 
     		/* Titta om programmet ska köras i bakgrunden eller köras vanligt */
     		if(strcmp(cmd[i-2],"&") == 0){
+    			/* Sätt det sista parameter till NULL */
+    			cmd[i-2] = NULL;
     			/* Kör kommandot som background */
     			executeForeGround(cmd,1);
     		}
     		else {
+    			/* Sätt det sista parameter till NULL */
+    			cmd[i-1] = NULL;
     			/* Kör kommandot som foreground */
     			executeForeGround(cmd,0);
     		}
