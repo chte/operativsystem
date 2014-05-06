@@ -10,6 +10,7 @@
 
 
 void executeForeGround(char**,int);
+void checkStatus(int,int,int);
 
 int main(int argc, char **argv) {
 
@@ -72,7 +73,7 @@ int main(int argc, char **argv) {
     	}
     	/* Användaren vill köra ett vanligt kommando */
     	else {
-    		char *cmd[7]; /* = {token,NULL}; */
+    		char *cmd[7];
     		cmd[0] = token; /* Sätt första token som redan är parsat */
     		int i = 1; 
 
@@ -109,34 +110,47 @@ int main(int argc, char **argv) {
 void executeForeGround(char **cmd,int background){
 	pid_t pid;
 	struct timeval start, end;
-	/* Kör den som en foreground process */
-	/* if(background == 0){ */
-		pid = fork();
-		if (pid == 0){
-			execvp(cmd[0], cmd);
-			printf("Unknown command\n");
+	pid = fork();
+	if (pid == 0){
+		execvp(cmd[0], cmd);
+		printf("Unknown command\n");
+	}
+	else{
+		int status = 0;
+		
+		int childId = 0;
+		if(background == 0){
+			printf("Spawned foreground process pid: %d\n",pid);
+
+			gettimeofday(&start, NULL);
+			childId = waitpid(-1, &status, 0);
+			gettimeofday(&end, NULL);
+
+			checkStatus(status,background,childId);
+			
+			printf("wallclock time: %lf\n", (((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000.0));
+		} else {
+			printf("Spawned background process pid: %d\n",pid);
+			childId = waitpid(-1, &status, WNOHANG);
+		}	
+	}
+	return;
+}
+
+void checkStatus(int status,int background,int childId){
+	if (WIFEXITED(status)) {
+		/* printf("exited, status=%d\n", WEXITSTATUS(status)); */
+		if(background == 0){
+			printf("Foreground process %d terminated\n",childId);
 		}
 		else{
-			int status = 0;
-			printf("Spawned foreground process pid: %d\n",pid);
-			gettimeofday(&start, NULL);
-			int childId = 0;
-			if(background == 0){
-				childId = waitpid(-1, &status, 0); /* wait(&status); */
-			} else {
-				printf("Background\n");
-				childId = waitpid(-1, &status, WNOHANG);
-			}
-			
-			gettimeofday(&end, NULL);
-			printf("Foreground process %d terminated\n",childId);
-			printf("wallclock time: %lf\n", (((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000.0));
+			printf("Background process %d terminated\n",childId);
 		}
-	/*}
-	 Kör den som en background process 
-	else {
-
-	} */
-
-	return;
+	} else if (WIFSIGNALED(status)) {
+		printf("killed by signal %d\n", WTERMSIG(status));
+	} else if (WIFSTOPPED(status)) {
+		printf("stopped by signal %d\n", WSTOPSIG(status));
+	} else if (WIFCONTINUED(status)) {
+		printf("continued\n");
+	}
 }
