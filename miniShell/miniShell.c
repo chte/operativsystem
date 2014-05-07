@@ -130,8 +130,8 @@ int main(int argc, char **argv) {
 }
 
 int hold(){
-	/* Titta om det har hänt en förändring i någon av child processer */
-    int pid = waitpid(-1, &status, WNOHANG);
+	/* Titta om det har hänt en förändring i någon av child processer */ 
+	int pid = waitpid(-1, &status, WNOHANG);
 
     /* En ändring i en childprocess */
     if(pid > 0 ){
@@ -141,7 +141,6 @@ int hold(){
     	/* Skicka tillbaka att det inte finns några mer child processer att undersöka */
     	return 0;
     }
-
     /* Säg att det kanske kan finnas fler child processer att undersöka */
     return pid + 1;
 }
@@ -179,10 +178,19 @@ void executeForeGround(char **cmd,int background){
 			gettimeofday(&end, NULL);
 			/* Skriv ut statusen för den terminerade child processen */
 			checkStatus(status,background,childId);
-			
+			/* Räkna ut hur lång tid det tog att köra, skriv ut det sen */
 			printf("wallclock time: %lf\n", (((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000.0));
-		} else {
+		}
+		/* Användaren vill starta en bakgrundsprocess
+		 * -> parent programmet ska inte vänta på att barnet kör klart
+		 */
+		else{
+			/* Skriv ut vad som händer till användaren */
 			printf("Spawned background process pid: %d\n",pid);
+			/* Med WNOHANG specificerat kommer vi inte vänta på att barnet kör klart
+			 * utan koden kommer bara att fortsäta förbi.
+			 * Statusen för barn processen kontrolleras istället i funktionen hold()
+			 */
 			childId = waitpid(-1, &status, WNOHANG);
 		}	
 	}
@@ -190,29 +198,37 @@ void executeForeGround(char **cmd,int background){
 }
 
 void INThandler(){
+	/* Stäng programmet som körs */
 	_exit(2);
 }
 
-
 void checkStatus(int status,int background,int childId){
-	if (WIFEXITED(status)) {
-		/* printf("exited, status=%d\n", WEXITSTATUS(status)); */
+	/* Programmet avslutade via exit*/ 
+	if (WIFEXITED(status)){
+		/* Olika outputs för bakgrund och förgrunds processer */
 		if(background == 0){
 			printf("Foreground process %d terminated\n",childId);
 		}
 		else{
 			printf("Background process %d terminated\n",childId);
 		}
-	} else if (WIFSIGNALED(status)) {
+	} 
+	/* Programmet avslutates via en signal, tex Ctrl+C */
+	else if (WIFSIGNALED(status)) {
+		/* Olika outputs för bakgrund och förgrunds processer */
 		if(background == 0){
 			printf("Foreground process %d terminated\n",childId);
 		}
 		else{
 			printf("Background process %d terminated\n",childId);
 		}
-	} else if (WIFSTOPPED(status)) {
+	}
+	/* Programmet stoppades via en signal*/
+	else if(WIFSTOPPED(status)){
 		printf("stopped by signal %d\n", WSTOPSIG(status));
-	} else if (WIFCONTINUED(status)) {
+	}
+	/* Programmet fortsatte köras */
+	else if(WIFCONTINUED(status)){
 		printf("continued\n");
 	}
 }
