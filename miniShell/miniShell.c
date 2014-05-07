@@ -1,3 +1,26 @@
+/*
+ * Name:			miniShell - A small shell that can execute programs in
+ *								foreground and background and change folder.
+ *
+ * Description:		The shell is a small shell that gives the possibility to
+ *					change the folder by using chdir, if the requested folder
+ *					doesn't exist the program will change to the HOME folder.
+ *					The shell can also start programs in foreground, which 
+ *					will print out the executing time, when exited. Programs
+ *					can also be runned in background mode by adding & after
+ *					the program name.
+ *
+ * Authors:			Carl Eriksson			(carerik@kth.se)
+ *					Christopher Teljstedt   (chte@kth.se)
+ *
+ * Syntax:			./miniShell
+ *
+ * Commands:		cd <foler path>  - change the current folder
+ *					<program name>	 - runs the program in foreground
+ *					<program name> & - runs the program in background
+ *
+ */
+
 #include <stdlib.h>			/* definierar bland annat exit() */
 #include <unistd.h>			/* Används av chdir som exempel */
 #include <stdio.h>			/* för input och output från och till användaren */
@@ -23,6 +46,7 @@ static const char *WS = " \t\n"; /* End of line tecken för att upptäcka tom in
  *
  */
 void executeProgram(char **cmd,int background);
+
 /**
  * checkStatus() - Kontrollerar statusen efter ett kört kommando
  * 
@@ -34,7 +58,20 @@ void executeProgram(char **cmd,int background);
  *
  */
 void checkStatus(int status,int background,int childId);
+
+/**
+ * hold() - Körs i main loopen, funktionen
+ *			kontrollerar om har skett någon 
+ *			ändring i någon bakgrunds program	
+ *
+ */
 int hold();
+
+/**
+ * INThandler() - används för att aktivera Ctrl+C
+ *				  i child processer.
+ *
+ */
 void INThandler();
 
 int main(int argc, char **argv) {
