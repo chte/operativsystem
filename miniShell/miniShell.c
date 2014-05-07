@@ -74,6 +74,7 @@ int hold();
  */
 void INThandler();
 
+/* Programmet startar här */
 int main(int argc, char **argv) {
 	/* Fångar upp Ctrl+c signalen och ignorerar den */
 	signal(SIGINT, SIG_IGN);
