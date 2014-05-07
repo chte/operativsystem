@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
 
 	/* Ta emot indata från användaren */
 	while (fgets(word, sizeof(word), stdin) != NULL){
-		while( hold() ){ }
+	e	while( hold() ){ }
 
 		if(strspn(word, WS) == strlen(word)) {
 			printf("> ");
