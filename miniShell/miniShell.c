@@ -58,8 +58,8 @@ int main(int argc, char **argv) {
 
         /* Exit - användaren vill sluta*/
         if(strcmp(token,"exit") == 0){
-       	 	printf("Exiting...\n");
-       	 	break;
+       	 	printf("Exiting...\n"); /* Säg hejdå till användaren */
+       	 	break; /* Avsluta main loopen så programmes avslutas */
     	}
     	/* cd - byta map */
     	else if(strcmp(token, "cd") == 0){
@@ -98,11 +98,11 @@ int main(int argc, char **argv) {
 
     		/* Hämta ut resten av alla tokens */
     		while(token != NULL && i < 6){
-    			/* printf("%s\n", token); */
     			/* Ta ut nästa token */
     			token = strtok(NULL, splitToken);
     			/* Spar ner det som in parameter */
     			cmd[i] = token;
+    			/* Öka räknaren för antal kommandon*/
     			i++;
     		}
     		/* Titta om programmet ska köras i bakgrunden eller köras vanligt */
@@ -122,48 +122,63 @@ int main(int argc, char **argv) {
     	/* Titta om några bakgrunds processer har gjort någon ändring */
 		while(hold()){}
 
-   		/* Titta på ändringar hos möjliga barn processer*/
+   		/* Skriv ut prompten efter vi är klara med allt */
 		printf("> ");
-
     }    
     /* Avsluta programmet med korrekt exit code */
     exit(0);
 }
 
 int hold(){
+	/* Titta om det har hänt en förändring i någon av child processer */
     int pid = waitpid(-1, &status, WNOHANG);
 
+    /* En ändring i en childprocess */
     if(pid > 0 ){
+    	/* Skriv  till användaren vad som har ändrats */
     	checkStatus(status, 1, pid);
     }else {
+    	/* Skicka tillbaka att det inte finns några mer child processer att undersöka */
     	return 0;
     }
 
+    /* Säg att det kanske kan finnas fler child processer att undersöka */
     return pid + 1;
 }
 
 
 void executeForeGround(char **cmd,int background){
+	/* Process id */
 	pid_t pid;
+	/* Start och stop för tidtagning */
 	struct timeval start, end;
+	/* Skapa en ny adressrymd för barnet */
 	pid = fork();
+	/* Barnets kod */
 	if (pid == 0){
+		/* Sätt att Ctrl+C fungerar att göra i barn processen */
 		signal(SIGINT, INThandler);
+		/* Kör kommandot som kom som inparamet */
 		execvp(cmd[0], cmd);
+		/* Ifall det inte finns något sådant kommando skriv ut det till användaren */
 		printf("Unknown command\n");
 	}
+	/* Parent processen */
 	else{
-		int status = 0;
-		int copyBackground = background;
+		/* Process id för barnet */
 		int childId = 0;
-		if(copyBackground == 0){
+		/* Titta om det är en bakgrund process som körs eller inte */
+		if(background == 0){
+			/* Skriv ut att barn processen har startat */
 			printf("Spawned foreground process pid: %d\n",pid);
-
-
+			/* Starta tidtagningen */
 			gettimeofday(&start, NULL);
+			/* Vänta tills barnet har kört klart */
 			childId = waitpid(pid, &status, 0);
+			/* Avsluta tidtagningen */
 			gettimeofday(&end, NULL);
-			checkStatus(status,copyBackground,childId);
+			/* Skriv ut statusen för den terminerade child processen */
+			checkStatus(status,background,childId);
 			
 			printf("wallclock time: %lf\n", (((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec))/1000000.0));
 		} else {
