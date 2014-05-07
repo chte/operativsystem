@@ -12,8 +12,28 @@
 int status; /* för returvärden från child-processer */
 static const char *WS = " \t\n"; /* End of line tecken för att upptäcka tom input från användaren */
 
-void executeForeGround(char**,int);
-void checkStatus(int,int,int);
+/**
+ * executeProgram() - Kör ett kommando
+ *
+ * Funktionen kör execvp() med de specifierade kommandon
+ * som finns som indata
+ *
+ * In:	char** cmd, 	de kommandon och inparams som ska köras
+ * 		int background,	om den ska köras som background eller foreground  
+ *
+ */
+void executeProgram(char **cmd,int background);
+/**
+ * checkStatus() - Kontrollerar statusen efter ett kört kommando
+ * 
+ * Skriver ut information till användaren efter ett kommando har kört klart
+ *
+ * In:	int status, 	Status koden från waitdpid()
+ *		int background,	Ifall processen kördes som en background eller foreground
+ *		int childId,	Id för child processen som kördes
+ *
+ */
+void checkStatus(int status,int background,int childId);
 int hold();
 void INThandler();
 
@@ -110,13 +130,13 @@ int main(int argc, char **argv) {
     			/* Sätt det sista parameter till NULL */
     			cmd[i-2] = NULL;
     			/* Kör kommandot som background */
-    			executeForeGround(cmd,1);
+    			executeProgram(cmd,1);
     		}
     		else {
     			/* Sätt det sista parameter till NULL */
     			cmd[i-1] = NULL;
     			/* Kör kommandot som foreground */
-    			executeForeGround(cmd,0);
+    			executeProgram(cmd,0);
     		}
     	}
     	/* Titta om några bakgrunds processer har gjort någon ändring */
@@ -146,7 +166,7 @@ int hold(){
 }
 
 
-void executeForeGround(char **cmd,int background){
+void executeProgram(char **cmd,int background){
 	/* Process id */
 	pid_t pid;
 	/* Start och stop för tidtagning */
