@@ -7,7 +7,7 @@
 #include <string.h>         /* definierar strings */
 #include <time.h>			/* Används för beräkning av körtiden */
 #include <sys/time.h>		/* Används för beräkning av körtiden */
-#include <signal.h>			/* För att hantera Ctrl+c */
+#include <signal.h>			/* För att hantera Ctrl+C */
 
 int status; /* för returvärden från child-processer */
 static const char *WS = " \t\n"; /* End of line tecken för att upptäcka tom input från användaren */
@@ -41,10 +41,10 @@ int main(int argc, char **argv) {
 	/* Ta emot indata från användaren */
 	while (fgets(word, sizeof(word), stdin) != NULL){
 		/* Titta om några bakgrunds processer har gjort någon ändring */
-		while( hold() ){ }
+		while(hold()){}
 
 		/* Titta så att användaren inte skicka in tom sträng */
-		if(strspn(word, WS) == strlen(word)) {
+		if(strspn(word, WS) == strlen(word)){
 			printf("> ");
 			continue; /* Forsätt, eftersom vi inte kan göra något med tomt ḱommando */
 		}   
@@ -66,6 +66,7 @@ int main(int argc, char **argv) {
     		/* Hämta andra argumentet, dvs sökvägen användaren vill byta till */
     		token = strtok(NULL, splitToken);
 
+    		/* Retur status för map byte */
     		int ret;
     		/* Prova att ändra map efter användarens önskemål */
     		ret = chdir(token);
@@ -91,9 +92,9 @@ int main(int argc, char **argv) {
     	}
     	/* Användaren vill köra ett vanligt kommando */
     	else {
-    		char *cmd[7];
+    		char *cmd[6]; /* Plats max 5 kommandon samt NULL som sista argument */
     		cmd[0] = token; /* Sätt första token som redan är parsat */
-    		int i = 1; 
+    		int i = 1; /* Räknare för kommandon */
 
     		/* Hämta ut resten av alla tokens */
     		while(token != NULL && i < 6){
@@ -104,7 +105,6 @@ int main(int argc, char **argv) {
     			cmd[i] = token;
     			i++;
     		}
-
     		/* Titta om programmet ska köras i bakgrunden eller köras vanligt */
     		if(strcmp(cmd[i-2],"&") == 0){
     			/* Sätt det sista parameter till NULL */
@@ -119,7 +119,8 @@ int main(int argc, char **argv) {
     			executeForeGround(cmd,0);
     		}
     	}
-		while( hold() ){ }
+    	/* Titta om några bakgrunds processer har gjort någon ändring */
+		while(hold()){}
 
    		/* Titta på ändringar hos möjliga barn processer*/
 		printf("> ");
