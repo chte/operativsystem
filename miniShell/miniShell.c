@@ -1,42 +1,30 @@
-#include <stdlib.h>
+#include <stdlib.h>			/* definierar bland annat exit() */
 #include <unistd.h>			/* Används av chdir som exempel */
-#include <stdio.h>
-#include <sys/types.h>
+#include <stdio.h>			/* för input och output från och till användaren */
+#include <sys/types.h>		/* definierar bland annat typen pid_t */
 #include <sys/wait.h>       /* definierar bland annat WIFEXITED */
 #include <stdio.h>			/* för kunna använda fget för indata från användaren */
 #include <string.h>         /* definierar strings */
-#include <time.h>
-#include <sys/time.h>
-#include <signal.h>
+#include <time.h>			/* Används för beräkning av körtiden */
+#include <sys/time.h>		/* Används för beräkning av körtiden */
+#include <signal.h>			/* För att hantera Ctrl+c */
 
 int status; /* för returvärden från child-processer */
+static const char *WS = " \t\n"; /* End of line tecken för att upptäcka tom input från användaren */
 
 void executeForeGround(char**,int);
 void checkStatus(int,int,int);
-
+int hold();
 void INThandler();
 
-int hold(){
-    int pid = waitpid(-1, &status, WNOHANG);
-
-    if(pid > 0 ){
-    	checkStatus(status, 1, pid);
-    }else {
-    	return 0;
-    }
-
-    return pid + 1;
-}
-
-static const char *WS = " \t\n"; 
-
-
 int main(int argc, char **argv) {
+	/* Fångar upp Ctrl+c signalen och ignorerar den */
 	signal(SIGINT, SIG_IGN);
 
-	char word[70];
-	printf("s%se", word);
+	/* Används för input från användaren, 70 tecken är max input enligt specification */
+	char word[70]; 
 
+	/* Längden för input */
 	int count = 1;
 
 	/* Mellanslag som används som token för strtok() */
@@ -52,11 +40,13 @@ int main(int argc, char **argv) {
 
 	/* Ta emot indata från användaren */
 	while (fgets(word, sizeof(word), stdin) != NULL){
-	e	while( hold() ){ }
+		/* Titta om några bakgrunds processer har gjort någon ändring */
+		while( hold() ){ }
 
+		/* Titta så att användaren inte skicka in tom sträng */
 		if(strspn(word, WS) == strlen(word)) {
 			printf("> ");
-			continue;
+			continue; /* Forsätt, eftersom vi inte kan göra något med tomt ḱommando */
 		}   
 
         count = strlen(word); /* Längden för kommandot */
@@ -139,6 +129,17 @@ int main(int argc, char **argv) {
     exit(0);
 }
 
+int hold(){
+    int pid = waitpid(-1, &status, WNOHANG);
+
+    if(pid > 0 ){
+    	checkStatus(status, 1, pid);
+    }else {
+    	return 0;
+    }
+
+    return pid + 1;
+}
 
 
 void executeForeGround(char **cmd,int background){
