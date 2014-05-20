@@ -5,6 +5,7 @@
 #include <string.h> 
 #include <errno.h> 
 #include <sys/mman.h>
+#include <limits.h>
 
 #define NALLOC 1024                                     /* minimum #units to request */
 
@@ -125,44 +126,52 @@ void * malloc(size_t nbytes)
 
 
 void *firstfit(unsigned nunits, Header *p, Header *prevp){
- for(p= prevp->s.ptr;  ; prevp = p, p = p->s.ptr) {
-    if(p->s.size >= nunits) {                           /* big enough */
-      if (p->s.size == nunits)                          /* exactly */
-		prevp->s.ptr = p->s.ptr;
-      else {                                            /* allocate tail end */
-		p->s.size -= nunits;
-		p += p->s.size;
-		p->s.size = nunits;
-      }
-      freep = prevp;
-      return (void *)(p+1);
-    }
-    if(p == freep)                                      /* wrapped around free list */
-      if((p = morecore(nunits)) == NULL)
-	return NULL;                                    /* none left */
-  }
+	for(p = prevp->s.ptr;  ; prevp = p, p = p->s.ptr) {
+		if(p->s.size >= nunits) {			/* big enough */
+			if (p->s.size == nunits)		/* exactly */
+				prevp->s.ptr = p->s.ptr;
+			else {                     		/* allocate tail end */
+				p->s.size -= nunits;		/* update free size */
+				p += p->s.size;				/* define a new header for allocated space */
+				p->s.size = nunits;			/* update a new header allocated size */
+			}
+			freep = prevp;
+			return (void *)(p+1);			/* return allocated space pointer, header excluded */
+		}
+		if(p == freep)                    	/* wrapped around free list */
+			if((p = morecore(nunits)) == NULL)
+				return NULL;              	/* none left */
+	}
 }
 
 void *bestfit(unsigned nunits, Header *p, Header *prevp){
- Header *best_p;
- for(p= prevp->s.ptr;  ; prevp = p, p = p->s.ptr) {
-    if(p->s.size >= nunits) {                           /* big enough */
-      if (p->s.size == nunits) {                          /* exactly */
-		prevp->s.ptr = p->s.ptr;
-	    freep = prevp;
-	    return (void *)(p+1);
-	  }
-      else {                                            /* allocate tail end */
-		p->s.size -= nunits;
-		p += p->s.size;
-		p->s.size = nunits;
-      }
+	Header *bestp = NULL;
+	Header *bestprevp = NULL;
+	unsigned min_size = INT_MAX;
+	for(p = prevp->s.ptr;  ; prevp = p, p = p->s.ptr) {
+		if(p->s.size >= nunits) {			/* big enough */
+			if (p->s.size == nunits){		/* exactly */
+				prevp->s.ptr = p->s.ptr;
+				freep = prevp;
+				return (void *)(p+1);		/* return allocated space pointer, header excluded */
+			}else if(bestp == NULL || p->s.size < min_size){
+				bestp = p;
+				bestprevp = prevp;
+				min_size = p->s.size;
+			}
+		}
+		if(p == freep){                    	/* wrapped around free list */
+			if(bestprevp != NULL){
+				bestp->s.size -= nunits;		/* update free size of best candidate */
+				bestp += bestp->s.size;			/* define a new header for allocated space */
+				bestp->s.size = nunits;			/* update a new header allocated size */
+				freep = bestprevp;
+				return (void *)(bestp+1);		/* return allocated space pointer, header excluded */
+			}
 
-    }
-    if(p == freep)                                      /* wrapped around free list */
-      if((p = morecore(nunits)) == NULL)
-	return NULL;                                    /* none left */
-  }
-
+			if((p = morecore(nunits)) == NULL)
+				return NULL;              	/* none left */
+		}
+	}
 }
 
