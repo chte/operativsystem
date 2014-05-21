@@ -10,7 +10,6 @@
 #define NULL 0
 #endif
 
-#include "brk.h"
 #include <unistd.h>
 
 #endif

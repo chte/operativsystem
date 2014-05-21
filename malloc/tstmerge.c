@@ -8,7 +8,6 @@ Author: Robert Rönngren 050218
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "brk.h"
 #include <unistd.h>
 
 #define SIZE 16384

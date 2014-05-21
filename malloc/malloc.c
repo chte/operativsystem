@@ -1,49 +1,23 @@
 #define _GNU_SOURCE
 
-#include "brk.h"
-#include <unistd.h>
-#include <string.h> 
-#include <errno.h> 
-#include <sys/mman.h>
-#include <limits.h>
-
-#define NALLOC 1024                                     /* minimum #units to request */
-
-
-typedef long Align;                                     /* for alignment to long boundary */
-
-union header {                                          /* block header */
-  struct {
-    union header *ptr;                                  /* next block if on free list */
-    unsigned size;                                      /* size of this block  - what unit? */ 
-  } s;
-  Align x;                                              /* force alignment of blocks */
-};
-
-typedef union header Header;
+#include "malloc.h"
 
 static Header base;                                     /* empty list to get started */
 static Header *freep = NULL;                            /* start of free list */
 
-void *first_fit(unsigned, Header *, Header *);
-void *best_fit(unsigned, Header *, Header *);
-void *allocate(unsigned, Header *, Header *);
+static Header *morecore(unsigned);
 
-#ifdef STRATEGY
-  #if   STRATEGY == 1
-    #define fit_strategy first_fit
-  #elif STRATEGY == 2    
-    #define fit_strategy best_fit
-  #else
-    #define fit_strategy first_fit
-  #endif
-#else
+
+#if   STRATEGY == 1
   #define fit_strategy first_fit
+#elif STRATEGY == 2    
+  #define fit_strategy best_fit
+#else
+  exit(1);
 #endif
 
 
 /* free: put block ap in the free list */
-
 void free(void * ap){
   Header *bp, *p;
 
@@ -69,31 +43,18 @@ void free(void * ap){
 }
 
 /* morecore: ask system for more memory */
-
-#ifdef MMAP
-
-static void * __endHeap = 0;
-
-void * endHeap(void)
-{
-  if(__endHeap == 0) __endHeap = sbrk(0);
-  return __endHeap;
-}
-#endif
-
-
 static Header *morecore(unsigned nu)
 {
   void *cp;
   Header *up;
-#ifdef MMAP
-  unsigned noPages;
-  if(__endHeap == 0) __endHeap = sbrk(0);
-#endif
 
   if(nu < NALLOC)
     nu = NALLOC;
+
 #ifdef MMAP
+  unsigned noPages;
+  if(__endHeap == 0) __endHeap = sbrk(0);
+
   noPages = ((nu*sizeof(Header))-1)/getpagesize() + 1;
   cp = mmap(__endHeap, noPages*getpagesize(), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
   nu = (noPages*getpagesize())/sizeof(Header);
@@ -101,6 +62,7 @@ static Header *morecore(unsigned nu)
 #else
   cp = sbrk(nu*sizeof(Header));
 #endif
+
   if(cp == (void *) -1){                                 /* no space at all */
     perror("failed to get more memory");
     return NULL;
@@ -164,13 +126,15 @@ void *realloc(void * ap, size_t nbytes)
 
 void *first_fit(unsigned nunits, Header *p, Header *prevp)
 {
-	for(p = prevp->s.ptr;  ; prevp = p, p = p->s.ptr) {
-		if(p->s.size >= nunits) {			/* big enough */
-        return (void *)allocate(nunits, prevp->s.ptr, p);   
+  for(p = prevp->s.ptr;  ; prevp = p, p = p->s.ptr) {
+    if(p->s.size >= nunits) {     /* big enough */
+        return (void *)allocate(nunits, prevp->s.ptr, prevp);   
 		}
-		if(p == freep)                    	/* wrapped around free list */
-			if((p = morecore(nunits)) == NULL)
+		if(p == freep){                 /* wrapped around free list */
+			if((p = morecore(nunits)) == NULL){
 				return NULL;              	/* none left */
+      }
+    }
 	}
 }
 
@@ -191,8 +155,9 @@ void *best_fit(unsigned nunits, Header *p, Header *prevp)
 				return (void *)allocate(nunits, bestprevp->s.ptr, bestprevp);		
 			}
 
-			if((p = morecore(nunits)) == NULL)
+			if((p = morecore(nunits)) == NULL){
 				return NULL;              	/* none left */
+      }
 		}
 	}
 }

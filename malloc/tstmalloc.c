@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "malloc.h"
+#include "brk.h"
 #include "tst.h"
 
 #define SIZE 10
