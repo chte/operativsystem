@@ -15,7 +15,11 @@ printf "********************* TEST MALLOC ********************* \n"
 printf "********************* TEST MEMORY ********************* \n"
 ./tstmemory
 printf "********************* TEST REALLOC ********************* \n"
-./tstrealloc
-printf "********************* TEST INCREASING MALLOC (CUSTOM) ********************* \n"
-./tstincrmalloc
+./tstrealloc 
+printf "********************* TEST MALLOC (STEADY) ********************* \n"
+./tststeady 10000
+printf "********************* TEST MALLOC (INCREASING) ********************* \n"
+./tstincrement 10000
+printf "********************* TEST FRAGMENT ********************* \n"
+./tstfragment 10000
 echo "All test executed"

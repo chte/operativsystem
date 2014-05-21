@@ -1,4 +1,4 @@
-\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tstincrmalloc tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tstincrmalloc.o core
+\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tststeady  tstincrement  tstfragment tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tststeady.o tstincrement.o tstfragment.o core
 gcc  -c -g -Wall -O4 -DSTRATEGY=0 tstalgorithms.c -o tstalgorithms.o
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=0 -o tstalgorithms tstalgorithms.o
 gcc  -c -g -Wall -O4 -DSTRATEGY=0 tstextreme.c -o tstextreme.o
@@ -11,12 +11,24 @@ gcc  -c -g -Wall -O4 -DSTRATEGY=0 tstrealloc.c -o tstrealloc.o
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=0 -o tstrealloc tstrealloc.o
 gcc  -c -g -Wall -O4 -DSTRATEGY=0 tstmerge.c -o tstmerge.o
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=0 -o tstmerge tstmerge.o
-gcc  -c -g -Wall -O4 -DSTRATEGY=0 tstincrmalloc.c -o tstincrmalloc.o
-tstincrmalloc.c: In function ‘main’:
-tstincrmalloc.c:19:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+gcc  -c -g -Wall -O4 -DSTRATEGY=0 tststeady.c -o tststeady.o
+tststeady.c: In function ‘main’:
+tststeady.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
      int epoch, i;
          ^
-gcc  -g -Wall -O4 -ansi -DSTRATEGY=0 -o tstincrmalloc tstincrmalloc.o
+gcc  -g -Wall -O4 -ansi -DSTRATEGY=0 -o tststeady tststeady.o
+gcc  -c -g -Wall -O4 -DSTRATEGY=0 tstincrement.c -o tstincrement.o
+tstincrement.c: In function ‘main’:
+tstincrement.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+     int epoch, i;
+         ^
+gcc  -g -Wall -O4 -ansi -DSTRATEGY=0 -o tstincrement tstincrement.o
+gcc  -c -g -Wall -O4 -DSTRATEGY=0 tstfragment.c -o tstfragment.o
+tstfragment.c: In function ‘main’:
+tstfragment.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+     int epoch, i;
+         ^
+gcc  -g -Wall -O4 -ansi -DSTRATEGY=0 -o tstfragment tstfragment.o
 exec ./RUN_TESTS
 -- Testing your implementation of malloc --
 
@@ -28,8 +40,8 @@ exec ./RUN_TESTS
 Test passed OK
 ********************* TEST ALGORITHMS ********************* 
 ./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
-./tstalgorithms: Max memory allocated 12199200
-./tstalgorithms: Memory consumed 14155776
+./tstalgorithms: Max memory allocated 11816576
+./tstalgorithms: Memory consumed 13737984
 ********************* TEST EXTREME USAGE ********************* 
 ./tstextreme, line 23: -- This test will search for memory leaks
 ./tstextreme, line 24: At most 3.0x pages are allocated and recycled
@@ -87,11 +99,15 @@ Test passed OK
 ./tstrealloc, line 43: Free block with realloc(., 0)
 ./tstrealloc, line 48: realloc(p, 0) returns null pointer
 ./tstrealloc, line 49: Free pointer allocated with realloc(NULL, 0)
-********************* TEST INCREASING MALLOC (CUSTOM) ********************* 
-Memory usage: 0 b
+********************* TEST MALLOC (STEADY) ********************* 
+Memory usage: 405504 b
+********************* TEST MALLOC (INCREASING) ********************* 
+Memory usage: 1351680 b
+********************* TEST FRAGMENT ********************* 
+Memory usage: 1200128 b
 All test executed
-rm tstextreme.o tstmerge.o tstincrmalloc.o tstrealloc.o tstalgorithms.o tstmemory.o tstmalloc.o
-\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tstincrmalloc tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tstincrmalloc.o core
+rm tstextreme.o tstmerge.o tstrealloc.o tstalgorithms.o tstmemory.o tstincrement.o tststeady.o tstmalloc.o tstfragment.o
+\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tststeady  tstincrement  tstfragment tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tststeady.o tstincrement.o tstfragment.o core
 gcc  -c -g -Wall -O4 -DSTRATEGY=1 tstalgorithms.c -o tstalgorithms.o
 gcc  -c -g -Wall -O4 -ansi -DSTRATEGY=1 malloc.c -o malloc.o
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=1 -o tstalgorithms tstalgorithms.o malloc.o
@@ -105,12 +121,24 @@ gcc  -c -g -Wall -O4 -DSTRATEGY=1 tstrealloc.c -o tstrealloc.o
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=1 -o tstrealloc tstrealloc.o malloc.o
 gcc  -c -g -Wall -O4 -DSTRATEGY=1 tstmerge.c -o tstmerge.o
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=1 -o tstmerge tstmerge.o malloc.o
-gcc  -c -g -Wall -O4 -DSTRATEGY=1 tstincrmalloc.c -o tstincrmalloc.o
-tstincrmalloc.c: In function ‘main’:
-tstincrmalloc.c:19:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+gcc  -c -g -Wall -O4 -DSTRATEGY=1 tststeady.c -o tststeady.o
+tststeady.c: In function ‘main’:
+tststeady.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
      int epoch, i;
          ^
-gcc  -g -Wall -O4 -ansi -DSTRATEGY=1 -o tstincrmalloc tstincrmalloc.o malloc.o
+gcc  -g -Wall -O4 -ansi -DSTRATEGY=1 -o tststeady tststeady.o malloc.o
+gcc  -c -g -Wall -O4 -DSTRATEGY=1 tstincrement.c -o tstincrement.o
+tstincrement.c: In function ‘main’:
+tstincrement.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+     int epoch, i;
+         ^
+gcc  -g -Wall -O4 -ansi -DSTRATEGY=1 -o tstincrement tstincrement.o malloc.o
+gcc  -c -g -Wall -O4 -DSTRATEGY=1 tstfragment.c -o tstfragment.o
+tstfragment.c: In function ‘main’:
+tstfragment.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+     int epoch, i;
+         ^
+gcc  -g -Wall -O4 -ansi -DSTRATEGY=1 -o tstfragment tstfragment.o malloc.o
 exec ./RUN_TESTS
 -- Testing your implementation of malloc --
 
@@ -122,8 +150,8 @@ exec ./RUN_TESTS
 Test passed OK
 ********************* TEST ALGORITHMS ********************* 
 ./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
-./tstalgorithms: Max memory allocated 11990520
-./tstalgorithms: Memory consumed 14162016
+./tstalgorithms: Max memory allocated 11715464
+./tstalgorithms: Memory consumed 13969616
 ********************* TEST EXTREME USAGE ********************* 
 ./tstextreme, line 23: -- This test will search for memory leaks
 ./tstextreme, line 24: At most 3.0x pages are allocated and recycled
@@ -180,11 +208,15 @@ Test passed OK
 ./tstrealloc, line 43: Free block with realloc(., 0)
 ./tstrealloc, line 48: realloc(p, 0) returns null pointer
 ./tstrealloc, line 49: Free pointer allocated with realloc(NULL, 0)
-********************* TEST INCREASING MALLOC (CUSTOM) ********************* 
-Memory usage: 0 b
+********************* TEST MALLOC (STEADY) ********************* 
+Memory usage: 409600 b
+********************* TEST MALLOC (INCREASING) ********************* 
+Memory usage: 1302528 b
+********************* TEST FRAGMENT ********************* 
+Memory usage: 1220608 b
 All test executed
-rm tstextreme.o tstmerge.o tstincrmalloc.o malloc.o tstrealloc.o tstalgorithms.o tstmemory.o tstmalloc.o
-\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tstincrmalloc tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tstincrmalloc.o core
+rm tstextreme.o tstmerge.o malloc.o tstrealloc.o tstalgorithms.o tstmemory.o tstincrement.o tststeady.o tstmalloc.o tstfragment.o
+\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tststeady  tstincrement  tstfragment tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tststeady.o tstincrement.o tstfragment.o core
 gcc  -c -g -Wall -O4 -DSTRATEGY=2 tstalgorithms.c -o tstalgorithms.o
 gcc  -c -g -Wall -O4 -ansi -DSTRATEGY=2 malloc.c -o malloc.o
 malloc.c: In function ‘realloc’:
@@ -211,12 +243,24 @@ gcc  -c -g -Wall -O4 -DSTRATEGY=2 tstrealloc.c -o tstrealloc.o
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=2 -o tstrealloc tstrealloc.o malloc.o
 gcc  -c -g -Wall -O4 -DSTRATEGY=2 tstmerge.c -o tstmerge.o
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=2 -o tstmerge tstmerge.o malloc.o
-gcc  -c -g -Wall -O4 -DSTRATEGY=2 tstincrmalloc.c -o tstincrmalloc.o
-tstincrmalloc.c: In function ‘main’:
-tstincrmalloc.c:19:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+gcc  -c -g -Wall -O4 -DSTRATEGY=2 tststeady.c -o tststeady.o
+tststeady.c: In function ‘main’:
+tststeady.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
      int epoch, i;
          ^
-gcc  -g -Wall -O4 -ansi -DSTRATEGY=2 -o tstincrmalloc tstincrmalloc.o malloc.o
+gcc  -g -Wall -O4 -ansi -DSTRATEGY=2 -o tststeady tststeady.o malloc.o
+gcc  -c -g -Wall -O4 -DSTRATEGY=2 tstincrement.c -o tstincrement.o
+tstincrement.c: In function ‘main’:
+tstincrement.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+     int epoch, i;
+         ^
+gcc  -g -Wall -O4 -ansi -DSTRATEGY=2 -o tstincrement tstincrement.o malloc.o
+gcc  -c -g -Wall -O4 -DSTRATEGY=2 tstfragment.c -o tstfragment.o
+tstfragment.c: In function ‘main’:
+tstfragment.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+     int epoch, i;
+         ^
+gcc  -g -Wall -O4 -ansi -DSTRATEGY=2 -o tstfragment tstfragment.o malloc.o
 exec ./RUN_TESTS
 -- Testing your implementation of malloc --
 
@@ -228,8 +272,8 @@ exec ./RUN_TESTS
 Test passed OK
 ********************* TEST ALGORITHMS ********************* 
 ./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
-./tstalgorithms: Max memory allocated 12062176
-./tstalgorithms: Memory consumed 12707920
+./tstalgorithms: Max memory allocated 11874920
+./tstalgorithms: Memory consumed 12585784
 ********************* TEST EXTREME USAGE ********************* 
 ./tstextreme, line 23: -- This test will search for memory leaks
 ./tstextreme, line 24: At most 3.0x pages are allocated and recycled
@@ -286,7 +330,11 @@ Test passed OK
 ./tstrealloc, line 43: Free block with realloc(., 0)
 ./tstrealloc, line 48: realloc(p, 0) returns null pointer
 ./tstrealloc, line 49: Free pointer allocated with realloc(NULL, 0)
-********************* TEST INCREASING MALLOC (CUSTOM) ********************* 
-Memory usage: 0 b
+********************* TEST MALLOC (STEADY) ********************* 
+Memory usage: 409600 b
+********************* TEST MALLOC (INCREASING) ********************* 
+Memory usage: 1228800 b
+********************* TEST FRAGMENT ********************* 
+Memory usage: 1114112 b
 All test executed
-rm tstextreme.o tstmerge.o tstincrmalloc.o malloc.o tstrealloc.o tstalgorithms.o tstmemory.o tstmalloc.o
+rm tstextreme.o tstmerge.o malloc.o tstrealloc.o tstalgorithms.o tstmemory.o tstincrement.o tststeady.o tstmalloc.o tstfragment.o

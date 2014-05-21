@@ -8,7 +8,6 @@
 #include <sys/mman.h>
 #include <limits.h> 
 
-#define MAX_SIZE 512
 #define SEED 5
 
 /*

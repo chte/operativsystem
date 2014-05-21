@@ -17,7 +17,9 @@ SRC	= $(MALLOC) \
 	  tstmemory.c \
 	  tstrealloc.c \
 	  tstmerge.c \
-	  tstincrmalloc.c
+	  tststeady.c \
+	  tstincrement.c \
+	  tstfragment.c
 
 OBJ	= tstalgorithms.o \
 	  tstextreme.o \
@@ -25,7 +27,9 @@ OBJ	= tstalgorithms.o \
 	  tstmemory.o \
 	  tstrealloc.o \
 	  tstmerge.o \
-	  tstincrmalloc.o
+	  tststeady.o \
+	  tstincrement.o \
+	  tstfragment.o
 
 BIN = $(patsubst tst%.c, tst%, $(filter tst%.c, $(SRC)))
 

@@ -1,0 +1,20 @@
+
+# No. epochs 10000 
+# Run	Heap memory	 Time (CPU seconds)
+1	    1220608	0.050000
+2	    1220608	0.050000
+3	    1220608	0.040000
+4	    1220608	0.050000
+5	    1220608	0.050000
+
+# No. epochs 20000 
+# Run	Heap memory	 Time (CPU seconds)
+1	    2375680	0.200000
+2	    2375680	0.190000
+3	    2375680	0.220000
+4	    2375680	0.190000
+5	    2375680	0.200000
+
+# No. epochs 30000 
+# Run	Heap memory	 Time (CPU seconds)
+1	    3555328	0.560000

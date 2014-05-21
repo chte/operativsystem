@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
+#define MAX_SIZE 512
+
 void *getmem(void){
     #ifdef MMAP
       return endHeap();
