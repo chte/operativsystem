@@ -16,6 +16,6 @@ printf "********************* TEST MEMORY ********************* \n"
 ./tstmemory
 printf "********************* TEST REALLOC ********************* \n"
 ./tstrealloc
-#printf "********************* TEST INCREASING MALLOC (CUSTOM) ********************* \n"
-#./tstincrmalloc
-#echo "All test executed"
+printf "********************* TEST INCREASING MALLOC (CUSTOM) ********************* \n"
+./tstincrmalloc
+echo "All test executed"

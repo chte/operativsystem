@@ -9,11 +9,7 @@
 #include <limits.h> 
 
 #define MAX_EPOCHS 500000
-#define EXPONENT 2
-#define RNG_SPAN 10
-#define SEED 1337
-
-
+#define SEED 5
 
 /*
  * Representation of block in memory.
@@ -22,7 +18,5 @@ typedef struct memblock_s {
     void * ptr;
     int size;
 } memblock_t;
-
-
 
 #endif /* __TSTUTILITY_H__ */

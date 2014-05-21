@@ -1,34 +1,119 @@
-\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tstincrmalloc malloc.o tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tstincrmalloc.o core
-gcc  -g -Wall -ansi -DSTRATEGY=1   -c -o tstalgorithms.o tstalgorithms.c
-gcc  -g -Wall -ansi -DSTRATEGY=1 -o tstalgorithms tstalgorithms.o
-tstalgorithms.c:73: error: undefined reference to 'endHeap'
-tstalgorithms.c:130: error: undefined reference to 'endHeap'
-collect2: error: ld returned 1 exit status
-make: *** [tstalgorithms] Error 1
-rm tstalgorithms.o
-\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tstincrmalloc malloc.o tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tstincrmalloc.o core
-gcc  -g -Wall -ansi -DSTRATEGY=1   -c -o tstalgorithms.o tstalgorithms.c
-gcc  -g -Wall -ansi -DSTRATEGY=1   -c -o malloc.o malloc.c
+\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tstincrmalloc tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tstincrmalloc.o core
+gcc  -c -g -Wall -DSTRATEGY=0 tstalgorithms.c -o tstalgorithms.o
+gcc  -g -Wall -ansi -DSTRATEGY=0 -o tstalgorithms tstalgorithms.o
+gcc  -c -g -Wall -DSTRATEGY=0 tstextreme.c -o tstextreme.o
+gcc  -g -Wall -ansi -DSTRATEGY=0 -o tstextreme tstextreme.o
+gcc  -c -g -Wall -DSTRATEGY=0 tstmalloc.c -o tstmalloc.o
+gcc  -g -Wall -ansi -DSTRATEGY=0 -o tstmalloc tstmalloc.o
+gcc  -c -g -Wall -DSTRATEGY=0 tstmemory.c -o tstmemory.o
+gcc  -g -Wall -ansi -DSTRATEGY=0 -o tstmemory tstmemory.o
+gcc  -c -g -Wall -DSTRATEGY=0 tstrealloc.c -o tstrealloc.o
+gcc  -g -Wall -ansi -DSTRATEGY=0 -o tstrealloc tstrealloc.o
+gcc  -c -g -Wall -DSTRATEGY=0 tstmerge.c -o tstmerge.o
+gcc  -g -Wall -ansi -DSTRATEGY=0 -o tstmerge tstmerge.o
+gcc  -c -g -Wall -DSTRATEGY=0 tstincrmalloc.c -o tstincrmalloc.o
+tstincrmalloc.c: In function ‘main’:
+tstincrmalloc.c:23:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+     int epoch, i;
+         ^
+gcc  -g -Wall -ansi -DSTRATEGY=0 -o tstincrmalloc tstincrmalloc.o
+exec ./RUN_TESTS
+-- Testing your implementation of malloc --
+
+- If you have any problem in passing a test read the corresponding
+- source file to understand what the test is checking
+
+********************* TEST MERGE ********************* 
+-- Testing merging of deallocated large blocks ( >= 135168 bytes)
+Test passed OK
+********************* TEST ALGORITHMS ********************* 
+./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
+./tstalgorithms: Max memory allocated 11547472
+./tstalgorithms: Memory consumed 13553664
+********************* TEST EXTREME USAGE ********************* 
+./tstextreme, line 23: -- This test will search for memory leaks
+./tstextreme, line 24: At most 3.0x pages are allocated and recycled
+./tstextreme: Used memory in test: 0x0 (= 0.00 * pagesize)
+********************* TEST MALLOC ********************* 
+./tstmalloc, line 19: -- Test malloc() for unusual situations
+./tstmalloc, line 21: Allocate small block of 17 bytes 
+./tstmalloc, line 25: Write on allocated block
+./tstmalloc, line 28: Allocate big block of 4711 bytes
+./tstmalloc, line 32: Write on allocated block
+./tstmalloc, line 34: Free big block
+./tstmalloc, line 37: Free small block
+./tstmalloc, line 40: Free NULL
+./tstmalloc, line 43: Allocate zero
+./tstmalloc, line 45: * ERROR: malloc(0) returned non NULL pointer!
+./tstmalloc, line 47: Free pointer from malloc(0)
+./tstmalloc, line 50: Test alignment for double
+********************* TEST MEMORY ********************* 
+./tstmemory, line 34: Testing memory utility
+./tstmemory, line 42: Getting small pieces of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using 0.00 times worst case calculation
+./tstmemory, line 68: Small memory handled OK
+./tstmemory, line 71: Getting big blocks of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory, line 90: Allocations versus worst case memory usage:
+./tstmemory: Using 0.00 times worst case calculation
+./tstmemory, line 98: Big memory handled OK
+********************* TEST REALLOC ********************* 
+./tstrealloc, line 17: -- Test realloc() for unusual situations
+./tstrealloc, line 19: Allocate 17 bytes with realloc(NULL, 17)
+./tstrealloc, line 24: Write on allocated block
+./tstrealloc, line 26: Increase block size with realloc(., 4711)
+./tstrealloc, line 33: Write on allocated block
+./tstrealloc, line 35: Decrease block size with realloc(., 17)
+./tstrealloc, line 40: Decreased block size
+./tstrealloc, line 43: Free block with realloc(., 0)
+./tstrealloc, line 48: realloc(p, 0) returns null pointer
+./tstrealloc, line 49: Free pointer allocated with realloc(NULL, 0)
+********************* TEST INCREASING MALLOC (CUSTOM) ********************* 
+Memory usage: 135168 b
+All test executed
+rm tstextreme.o tstmerge.o tstincrmalloc.o tstrealloc.o tstalgorithms.o tstmemory.o tstmalloc.o
+\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tstincrmalloc tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tstincrmalloc.o core
+gcc  -c -g -Wall -DSTRATEGY=1 tstalgorithms.c -o tstalgorithms.o
+gcc  -c -g -Wall -ansi -DSTRATEGY=1 malloc.c -o malloc.o
 malloc.c: In function ‘malloc’:
-malloc.c:99:3: warning: ‘p’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+malloc.c:95:3: warning: ‘p’ may be used uninitialized in this function [-Wmaybe-uninitialized]
    return (void *)fit_strategy(nunits, p, prevp);   
    ^
 gcc  -g -Wall -ansi -DSTRATEGY=1 -o tstalgorithms tstalgorithms.o malloc.o
-gcc  -g -Wall -ansi -DSTRATEGY=1   -c -o tstextreme.o tstextreme.c
+gcc  -c -g -Wall -DSTRATEGY=1 tstextreme.c -o tstextreme.o
 gcc  -g -Wall -ansi -DSTRATEGY=1 -o tstextreme tstextreme.o malloc.o
-gcc  -g -Wall -ansi -DSTRATEGY=1   -c -o tstmalloc.o tstmalloc.c
+gcc  -c -g -Wall -DSTRATEGY=1 tstmalloc.c -o tstmalloc.o
 gcc  -g -Wall -ansi -DSTRATEGY=1 -o tstmalloc tstmalloc.o malloc.o
-gcc  -g -Wall -ansi -DSTRATEGY=1   -c -o tstmemory.o tstmemory.c
+gcc  -c -g -Wall -DSTRATEGY=1 tstmemory.c -o tstmemory.o
 gcc  -g -Wall -ansi -DSTRATEGY=1 -o tstmemory tstmemory.o malloc.o
-gcc  -g -Wall -ansi -DSTRATEGY=1   -c -o tstrealloc.o tstrealloc.c
+gcc  -c -g -Wall -DSTRATEGY=1 tstrealloc.c -o tstrealloc.o
 gcc  -g -Wall -ansi -DSTRATEGY=1 -o tstrealloc tstrealloc.o malloc.o
-gcc  -g -Wall -ansi -DSTRATEGY=1   -c -o tstmerge.o tstmerge.c
+gcc  -c -g -Wall -DSTRATEGY=1 tstmerge.c -o tstmerge.o
 gcc  -g -Wall -ansi -DSTRATEGY=1 -o tstmerge tstmerge.o malloc.o
-gcc  -g -Wall -ansi -DSTRATEGY=1   -c -o tstincrmalloc.o tstincrmalloc.c
+gcc  -c -g -Wall -DSTRATEGY=1 tstincrmalloc.c -o tstincrmalloc.o
 tstincrmalloc.c: In function ‘main’:
-tstincrmalloc.c:16:12: warning: unused variable ‘j’ [-Wunused-variable]
-     int i, j;
-            ^
+tstincrmalloc.c:23:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+     int epoch, i;
+         ^
 gcc  -g -Wall -ansi -DSTRATEGY=1 -o tstincrmalloc tstincrmalloc.o malloc.o
 exec ./RUN_TESTS
 -- Testing your implementation of malloc --
@@ -40,13 +125,13 @@ exec ./RUN_TESTS
 -- Testing merging of deallocated large blocks ( >= 16384 bytes)
 Test passed OK
 ********************* TEST ALGORITHMS ********************* 
-./tstalgorithms, line 69: -- This test checks malloc(), free() and realloc()
-./tstalgorithms: Max memory allocated 11946776
-./tstalgorithms: Memory consumed 14176256
+./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
+./tstalgorithms: Max memory allocated 11984600
+./tstalgorithms: Memory consumed 14443960
 ********************* TEST EXTREME USAGE ********************* 
 ./tstextreme, line 23: -- This test will search for memory leaks
 ./tstextreme, line 24: At most 3.0x pages are allocated and recycled
-./tstextreme: Used memory in test: 0x5000 (= 5.00 * pagesize)
+./tstextreme: Used memory in test: 0x0 (= 0.00 * pagesize)
 ********************* TEST MALLOC ********************* 
 ./tstmalloc, line 19: -- Test malloc() for unusual situations
 ./tstmalloc, line 21: Allocate small block of 17 bytes 
@@ -60,34 +145,131 @@ Test passed OK
 ./tstmalloc, line 47: Free pointer from malloc(0)
 ./tstmalloc, line 50: Test alignment for double
 ********************* TEST MEMORY ********************* 
-./tstmemory, line 32: Testing memory utility
-./tstmemory, line 40: Getting small pieces of memory
-./tstmemory: Using total of 0x4000 of memory
-./tstmemory: Using total of 0x4000 of memory
-./tstmemory: Using total of 0x4000 of memory
-./tstmemory: Using total of 0x4000 of memory
-./tstmemory: Using total of 0x4000 of memory
-./tstmemory: Using total of 0x4000 of memory
-./tstmemory: Using total of 0x4000 of memory
-./tstmemory: Using total of 0x4000 of memory
-./tstmemory: Using total of 0x4000 of memory
-./tstmemory: Using total of 0x4000 of memory
-./tstmemory: Using 2.00 times worst case calculation
-./tstmemory, line 66: Small memory handled OK
-./tstmemory, line 69: Getting big blocks of memory
-./tstmemory: Using total of 0x450000 of memory
-./tstmemory: Using total of 0x450000 of memory
-./tstmemory: Using total of 0x450000 of memory
-./tstmemory: Using total of 0x450000 of memory
-./tstmemory: Using total of 0x450000 of memory
-./tstmemory: Using total of 0x450000 of memory
-./tstmemory: Using total of 0x450000 of memory
-./tstmemory: Using total of 0x450000 of memory
-./tstmemory: Using total of 0x450000 of memory
-./tstmemory: Using total of 0x450000 of memory
-./tstmemory, line 88: Allocations versus worst case memory usage:
-./tstmemory: Using 1.10 times worst case calculation
-./tstmemory, line 96: Big memory handled OK
+./tstmemory, line 34: Testing memory utility
+./tstmemory, line 42: Getting small pieces of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using 0.00 times worst case calculation
+./tstmemory, line 68: Small memory handled OK
+./tstmemory, line 71: Getting big blocks of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory, line 90: Allocations versus worst case memory usage:
+./tstmemory: Using 0.00 times worst case calculation
+./tstmemory, line 98: Big memory handled OK
+********************* TEST REALLOC ********************* 
+./tstrealloc, line 17: -- Test realloc() for unusual situations
+./tstrealloc, line 19: Allocate 17 bytes with realloc(NULL, 17)
+./tstrealloc, line 24: Write on allocated block
+./tstrealloc, line 26: Increase block size with realloc(., 4711)
+./tstrealloc, line 33: Write on allocated block
+./tstrealloc, line 35: Decrease block size with realloc(., 17)
+./tstrealloc, line 40: Decreased block size
+./tstrealloc, line 43: Free block with realloc(., 0)
+./tstrealloc, line 48: realloc(p, 0) returns null pointer
+./tstrealloc, line 49: Free pointer allocated with realloc(NULL, 0)
+********************* TEST INCREASING MALLOC (CUSTOM) ********************* 
+Memory usage: 273072128 b
+All test executed
+rm tstextreme.o tstmerge.o tstincrmalloc.o malloc.o tstrealloc.o tstalgorithms.o tstmemory.o tstmalloc.o
+\rm -f  tstalgorithms  tstextreme  tstmalloc  tstmemory  tstrealloc  tstmerge  tstincrmalloc tstalgorithms.o tstextreme.o tstmalloc.o tstmemory.o tstrealloc.o tstmerge.o tstincrmalloc.o core
+gcc  -c -g -Wall -DSTRATEGY=2 tstalgorithms.c -o tstalgorithms.o
+gcc  -c -g -Wall -ansi -DSTRATEGY=2 malloc.c -o malloc.o
+malloc.c: In function ‘malloc’:
+malloc.c:95:3: warning: ‘p’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+   return (void *)fit_strategy(nunits, p, prevp);   
+   ^
+gcc  -g -Wall -ansi -DSTRATEGY=2 -o tstalgorithms tstalgorithms.o malloc.o
+gcc  -c -g -Wall -DSTRATEGY=2 tstextreme.c -o tstextreme.o
+gcc  -g -Wall -ansi -DSTRATEGY=2 -o tstextreme tstextreme.o malloc.o
+gcc  -c -g -Wall -DSTRATEGY=2 tstmalloc.c -o tstmalloc.o
+gcc  -g -Wall -ansi -DSTRATEGY=2 -o tstmalloc tstmalloc.o malloc.o
+gcc  -c -g -Wall -DSTRATEGY=2 tstmemory.c -o tstmemory.o
+gcc  -g -Wall -ansi -DSTRATEGY=2 -o tstmemory tstmemory.o malloc.o
+gcc  -c -g -Wall -DSTRATEGY=2 tstrealloc.c -o tstrealloc.o
+gcc  -g -Wall -ansi -DSTRATEGY=2 -o tstrealloc tstrealloc.o malloc.o
+gcc  -c -g -Wall -DSTRATEGY=2 tstmerge.c -o tstmerge.o
+gcc  -g -Wall -ansi -DSTRATEGY=2 -o tstmerge tstmerge.o malloc.o
+gcc  -c -g -Wall -DSTRATEGY=2 tstincrmalloc.c -o tstincrmalloc.o
+tstincrmalloc.c: In function ‘main’:
+tstincrmalloc.c:23:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+     int epoch, i;
+         ^
+gcc  -g -Wall -ansi -DSTRATEGY=2 -o tstincrmalloc tstincrmalloc.o malloc.o
+exec ./RUN_TESTS
+-- Testing your implementation of malloc --
+
+- If you have any problem in passing a test read the corresponding
+- source file to understand what the test is checking
+
+********************* TEST MERGE ********************* 
+-- Testing merging of deallocated large blocks ( >= 16384 bytes)
+Test passed OK
+********************* TEST ALGORITHMS ********************* 
+./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
+./tstalgorithms: Max memory allocated 11914296
+./tstalgorithms: Memory consumed 12577440
+********************* TEST EXTREME USAGE ********************* 
+./tstextreme, line 23: -- This test will search for memory leaks
+./tstextreme, line 24: At most 3.0x pages are allocated and recycled
+./tstextreme: Used memory in test: 0x0 (= 0.00 * pagesize)
+********************* TEST MALLOC ********************* 
+./tstmalloc, line 19: -- Test malloc() for unusual situations
+./tstmalloc, line 21: Allocate small block of 17 bytes 
+./tstmalloc, line 25: Write on allocated block
+./tstmalloc, line 28: Allocate big block of 4711 bytes
+./tstmalloc, line 32: Write on allocated block
+./tstmalloc, line 34: Free big block
+./tstmalloc, line 37: Free small block
+./tstmalloc, line 40: Free NULL
+./tstmalloc, line 43: Allocate zero
+./tstmalloc, line 47: Free pointer from malloc(0)
+./tstmalloc, line 50: Test alignment for double
+********************* TEST MEMORY ********************* 
+./tstmemory, line 34: Testing memory utility
+./tstmemory, line 42: Getting small pieces of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using 0.00 times worst case calculation
+./tstmemory, line 68: Small memory handled OK
+./tstmemory, line 71: Getting big blocks of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory: Using total of 0x0 of memory
+./tstmemory, line 90: Allocations versus worst case memory usage:
+./tstmemory: Using 0.00 times worst case calculation
+./tstmemory, line 98: Big memory handled OK
 ********************* TEST REALLOC ********************* 
 ./tstrealloc, line 17: -- Test realloc() for unusual situations
 ./tstrealloc, line 19: Allocate 17 bytes with realloc(NULL, 17)

@@ -26,7 +26,7 @@ union header {                                          /* block header */
 
 typedef union header Header;
 
-void free(void *);
+/*void free(void *);*/
 void *realloc(void *, size_t);
 void *first_fit(unsigned, Header *, Header *);
 void *best_fit(unsigned, Header *, Header *);

@@ -15,8 +15,8 @@ rm -f make_out
 
 #0=SYSTEM_MALLOC 1=FIRST_FIT 2=BEST_FIT
 STRATEGY="0 1 2"
-EPOCHS="100000 200000 300000 400000 500000"
-RUNS='seq 5'
+EPOCHS="10000 20000 30000 40000 50000"
+RUNS="1 2 3 4 5"
 TESTFILE="$1"
 
 for S in $STRATEGY; do
@@ -38,27 +38,33 @@ for S in $STRATEGY; do
 		echo "Test failed, something went wrong during make."
 	fi
 
-	DAT_FILE="'basename ${TESTFILE}'.$S.dat"
+	DAT_FILE="basename ${TESTFILE}$S.dat"
 
 	#CLEAR PREVIOUS RESULT FILES
 	rm -f $DAT_FILE
 
-	printf "# Iterations\tHeap memory\t Time (CPU seconds, user + kernel mode)\n" | tee -a $DAT_FILE
 
 	for i in $EPOCHS; do
-		#Run the test five times for each epoch
-		for j in $RUNS; do
-			# Measure time
-			output=$(/usr/bin/time --format="Time: %U %S\n" $TESTFILE $i 2>$1)
-			m[$j]=$(echo "$output" | grep -o "Memory usage; [0-9]* b" | awk '{print $3}') 
-			t[$j]=$(echo "$output" | grep -o "Time; [0-9]*.[0-9]* [0-9]*.[0-9]*" | awk '{print $2 + $3}')
-			echo "${t[$j]}" | tr " " "\n"
-			#m_tot=t_tot+$(m[$j]) | tr " " "\n" 
-			#printf "%d\t%11d\t%f\n" $j $m[$j] $t[$j] | tee -a $DAT_FILE
-		done
+		printf "\n# No. epochs %d \n" $i | tee -a $DAT_FILE
+		printf "# Run\tHeap memory\t Time (CPU seconds)\n" | tee -a $DAT_FILE
 
-		#t_avg=$t_tot;
-		#m_avg=$m_tot;
-		#printf "%d\t%11d\t%f\n" $i $m_avg $t_avg | tee -a $DAT_FILE
+		#Run the test five times for each epoch
+       	t_tot=0
+       	m_avg=0
+        for j in $RUNS; do
+
+            # Measure user mode + kernel mode CPU-seconds.
+            output=$(/usr/bin/time --format="Time: %e %U %S\n" ./$TESTFILE $i 2>&1)
+			#printf "%s\n" $output | tee -a $DAT_FILE
+
+            m[$j]=$(echo "$output" | grep -o "Memory usage: [0-9]* b" | awk '{print $3}')
+            t[$j]=$(echo "$output" | grep -o "Time: [0-9]*.[0-9]* [0-9]*.[0-9]*" | awk '{print $2}')
+
+			printf "%d\t%11d\t%f\n" $j ${m[$j]} ${t[j]} | tee -a $DAT_FILE
+        done
 	done
 done
+
+
+
+
