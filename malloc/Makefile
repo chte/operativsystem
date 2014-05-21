@@ -1,8 +1,8 @@
 STRATEGY=0
 
-XFLAGS	= -g -Wall -ansi -DSTRATEGY=$(STRATEGY)
+XFLAGS	= -g -Wall -O4 -ansi -DSTRATEGY=$(STRATEGY)
 
-CFLAGS	= -g -Wall -DSTRATEGY=$(STRATEGY)
+CFLAGS	= -g -Wall -O4 -DSTRATEGY=$(STRATEGY)
 
 # CC	= gcc -ansi -pedantic -Wall -g -pipe -O -pg
 CC	= gcc 

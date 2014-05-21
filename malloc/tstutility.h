@@ -8,7 +8,7 @@
 #include <sys/mman.h>
 #include <limits.h> 
 
-#define MAX_EPOCHS 500000
+#define MAX_SIZE 512
 #define SEED 5
 
 /*

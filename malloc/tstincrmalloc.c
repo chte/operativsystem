@@ -13,12 +13,8 @@ void *getmem(void){
 
 
 int main(int argc, char *argv[]) {
-    int epochs = (argc > 1) ? atoi(argv[1]) : MAX_EPOCHS;
+    int epochs = (argc > 1) ? atoi(argv[1]) : 0;
 
-    if (epochs > MAX_EPOCHS) {
-        fprintf(stderr, "Test set to default EPOCH, set it to lower than %d.\n", MAX_EPOCHS);
-        epochs = MAX_EPOCHS;
-    }
 
     int epoch, i;
     void *lowbreak, *highbreak;
@@ -34,25 +30,31 @@ int main(int argc, char *argv[]) {
 
 
     for (i = 0; i < epochs; ++i) {
-           
-            /* Malloc between 0 and MAX_SIZE */
-            block[i].size = 512;
-            block[i].ptr = malloc(block[i].size);
+        int index = rand() % epochs;
+        if(rand() % 2 == 0){
+            free(block[index].ptr);
+            block[index].ptr = NULL;
 
-            if (block[i].ptr == NULL) {
+        }else{
+
+            /* Malloc between 0 and MAX_SIZE */
+            block[index].size = rand() % MAX_SIZE + 1;
+            block[index].ptr = malloc(block[index].size);
+
+            if (block[index].ptr == NULL) {
                 perror("Error: Insufficient memory when mallocing.");
                 exit(1);
             }
             
             /* Realloc between 0 and 2*MAX_SIZE */
-            /*int REALLOC_SIZE = 32;
-            block[i].ptr = realloc( block[i].ptr, REALLOC_SIZE );
-            block[i].size = REALLOC_SIZE;
-            if (block[i].ptr == NULL) {
+            int REALLOC_SIZE = rand() % MAX_SIZE + 1;
+            block[index].ptr = realloc( block[index].ptr, REALLOC_SIZE );
+            block[index].size = REALLOC_SIZE;
+            if (block[index].ptr == NULL) {
                 perror("Error: Insufficient memory when reallocing.");
                 exit(1);
-            }*/
-
+            }            
+        }
         
     }
 
