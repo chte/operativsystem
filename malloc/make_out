@@ -40,8 +40,8 @@ exec ./RUN_TESTS
 Test passed OK
 ********************* TEST ALGORITHMS ********************* 
 ./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
-./tstalgorithms: Max memory allocated 11816576
-./tstalgorithms: Memory consumed 13737984
+./tstalgorithms: Max memory allocated 11775328
+./tstalgorithms: Memory consumed 13742080
 ********************* TEST EXTREME USAGE ********************* 
 ./tstextreme, line 23: -- This test will search for memory leaks
 ./tstextreme, line 24: At most 3.0x pages are allocated and recycled
@@ -150,8 +150,8 @@ exec ./RUN_TESTS
 Test passed OK
 ********************* TEST ALGORITHMS ********************* 
 ./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
-./tstalgorithms: Max memory allocated 11715464
-./tstalgorithms: Memory consumed 13969616
+./tstalgorithms: Max memory allocated 12028352
+./tstalgorithms: Memory consumed 14352472
 ********************* TEST EXTREME USAGE ********************* 
 ./tstextreme, line 23: -- This test will search for memory leaks
 ./tstextreme, line 24: At most 3.0x pages are allocated and recycled
@@ -272,8 +272,8 @@ exec ./RUN_TESTS
 Test passed OK
 ********************* TEST ALGORITHMS ********************* 
 ./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
-./tstalgorithms: Max memory allocated 11874920
-./tstalgorithms: Memory consumed 12585784
+./tstalgorithms: Max memory allocated 11862192
+./tstalgorithms: Memory consumed 12628216
 ********************* TEST EXTREME USAGE ********************* 
 ./tstextreme, line 23: -- This test will search for memory leaks
 ./tstextreme, line 24: At most 3.0x pages are allocated and recycled
