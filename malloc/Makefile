@@ -4,8 +4,8 @@ XFLAGS	= -g -Wall -O4 -ansi -DSTRATEGY=$(STRATEGY)
 
 CFLAGS	= -g -Wall -O4 -DSTRATEGY=$(STRATEGY)
 
-# CC	= gcc -ansi -pedantic -Wall -g -pipe -O -pg
-CC	= gcc 
+#CC	= gcc -ansi -pedantic -Wall -g -pipe -O -pg
+CC	= gcc
 
 
 MALLOC=malloc.c

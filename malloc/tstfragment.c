@@ -5,7 +5,7 @@
 
 #define MAX_SIZE 512
 
-void *getmem(void){
+void *getbreak(void){
     #ifdef MMAP
       return endHeap();
     #else
@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     int epochs = (argc > 1) ? atoi(argv[1]) : 0;
 
 
-    int epoch, i;
+    int i;
     void *lowbreak, *highbreak;
     memblock_t block[epochs];
     srand(SEED);
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
         block[i].ptr = NULL;
     }
 
-    lowbreak = getmem();
+    lowbreak = getbreak();
 
 
     for (i = 0; i < epochs; ++i) {
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 
         }else{
 
-            /* Malloc between 0 and MAX_SIZE */
+            /* Malloc with a random size between 1 and MAX_SIZE */
             block[index].size = rand() % MAX_SIZE + 1;
             block[index].ptr = malloc(block[index].size);
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
                 exit(1);
             }
             
-            /* Realloc between 0 and 2*MAX_SIZE */
+            /* Realloc with a random size between 1 and MAX_SIZE */
             int REALLOC_SIZE = rand() % MAX_SIZE + 1;
             block[index].ptr = realloc( block[index].ptr, REALLOC_SIZE );
             block[index].size = REALLOC_SIZE;
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
         free(block[i].ptr);
     }
 
-    highbreak = getmem();
+    highbreak = getbreak();
 
     fprintf(stderr, "Memory usage: %u b\n", highbreak-lowbreak);
 

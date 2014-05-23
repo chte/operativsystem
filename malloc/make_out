@@ -19,7 +19,7 @@ tststeady.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=0 -o tststeady tststeady.o
 gcc  -c -g -Wall -O4 -DSTRATEGY=0 tstincrement.c -o tstincrement.o
 tstincrement.c: In function ‘main’:
-tstincrement.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+tstincrement.c:24:9: warning: unused variable ‘epoch’ [-Wunused-variable]
      int epoch, i;
          ^
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=0 -o tstincrement tstincrement.o
@@ -40,8 +40,8 @@ exec ./RUN_TESTS
 Test passed OK
 ********************* TEST ALGORITHMS ********************* 
 ./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
-./tstalgorithms: Max memory allocated 11802048
-./tstalgorithms: Memory consumed 13553664
+./tstalgorithms: Max memory allocated 11653448
+./tstalgorithms: Memory consumed 13467648
 ********************* TEST EXTREME USAGE ********************* 
 ./tstextreme, line 23: -- This test will search for memory leaks
 ./tstextreme, line 24: At most 3.0x pages are allocated and recycled
@@ -102,7 +102,7 @@ Test passed OK
 ********************* TEST MALLOC (STEADY) ********************* 
 Memory usage: 405504 b
 ********************* TEST MALLOC (INCREASING) ********************* 
-Memory usage: 1351680 b
+Memory usage: 2162688 b
 ********************* TEST FRAGMENT ********************* 
 Memory usage: 1200128 b
 All test executed
@@ -129,7 +129,7 @@ tststeady.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=1 -o tststeady tststeady.o malloc.o
 gcc  -c -g -Wall -O4 -DSTRATEGY=1 tstincrement.c -o tstincrement.o
 tstincrement.c: In function ‘main’:
-tstincrement.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+tstincrement.c:24:9: warning: unused variable ‘epoch’ [-Wunused-variable]
      int epoch, i;
          ^
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=1 -o tstincrement tstincrement.o malloc.o
@@ -150,8 +150,8 @@ exec ./RUN_TESTS
 Test passed OK
 ********************* TEST ALGORITHMS ********************* 
 ./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
-./tstalgorithms: Max memory allocated 11877448
-./tstalgorithms: Memory consumed 13984832
+./tstalgorithms: Max memory allocated 11861648
+./tstalgorithms: Memory consumed 14091176
 ********************* TEST EXTREME USAGE ********************* 
 ./tstextreme, line 23: -- This test will search for memory leaks
 ./tstextreme, line 24: At most 3.0x pages are allocated and recycled
@@ -211,7 +211,7 @@ Test passed OK
 ********************* TEST MALLOC (STEADY) ********************* 
 Memory usage: 409600 b
 ********************* TEST MALLOC (INCREASING) ********************* 
-Memory usage: 1302528 b
+Memory usage: 2162688 b
 ********************* TEST FRAGMENT ********************* 
 Memory usage: 1220608 b
 All test executed
@@ -251,7 +251,7 @@ tststeady.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=2 -o tststeady tststeady.o malloc.o
 gcc  -c -g -Wall -O4 -DSTRATEGY=2 tstincrement.c -o tstincrement.o
 tstincrement.c: In function ‘main’:
-tstincrement.c:21:9: warning: unused variable ‘epoch’ [-Wunused-variable]
+tstincrement.c:24:9: warning: unused variable ‘epoch’ [-Wunused-variable]
      int epoch, i;
          ^
 gcc  -g -Wall -O4 -ansi -DSTRATEGY=2 -o tstincrement tstincrement.o malloc.o
@@ -272,8 +272,8 @@ exec ./RUN_TESTS
 Test passed OK
 ********************* TEST ALGORITHMS ********************* 
 ./tstalgorithms, line 67: -- This test checks malloc(), free() and realloc()
-./tstalgorithms: Max memory allocated 11811616
-./tstalgorithms: Memory consumed 12354640
+./tstalgorithms: Max memory allocated 11700896
+./tstalgorithms: Memory consumed 12405448
 ********************* TEST EXTREME USAGE ********************* 
 ./tstextreme, line 23: -- This test will search for memory leaks
 ./tstextreme, line 24: At most 3.0x pages are allocated and recycled
@@ -333,7 +333,7 @@ Test passed OK
 ********************* TEST MALLOC (STEADY) ********************* 
 Memory usage: 409600 b
 ********************* TEST MALLOC (INCREASING) ********************* 
-Memory usage: 1228800 b
+Memory usage: 2138112 b
 ********************* TEST FRAGMENT ********************* 
 Memory usage: 1114112 b
 All test executed

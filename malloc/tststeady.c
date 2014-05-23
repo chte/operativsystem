@@ -5,7 +5,7 @@
 
 #define MAX_SIZE 32
 
-void *getmem(void){
+void *getbreak(void){
     #ifdef MMAP
       return endHeap();
     #else
@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     int epochs = (argc > 1) ? atoi(argv[1]) : 0;
 
 
-    int epoch, i;
+    int i;
     void *lowbreak, *highbreak;
     memblock_t block[epochs];
     srand(5);
@@ -28,10 +28,11 @@ int main(int argc, char *argv[]) {
         block[i].ptr = NULL;
     }
 
-    lowbreak = getmem();
+    lowbreak = getbreak();
 
 
     for (i = 0; i < epochs; ++i) {
+        /* Malloc with constant size MAXSIZE */
         block[i].size = MAX_SIZE;
         block[i].ptr = malloc(block[i].size);
 
@@ -46,7 +47,7 @@ int main(int argc, char *argv[]) {
         free(block[i].ptr);
     }
 
-    highbreak = getmem();
+    highbreak = getbreak();
 
     fprintf(stderr, "Memory usage: %u b\n", highbreak-lowbreak);
 

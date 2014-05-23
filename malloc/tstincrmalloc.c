@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     int epochs = (argc > 1) ? atoi(argv[1]) : 0;
 
 
-    int epoch, i;
+    int i;
     void *lowbreak, *highbreak;
     memblock_t block[epochs];
     srand(SEED);

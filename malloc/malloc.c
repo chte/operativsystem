@@ -276,11 +276,11 @@ void *best_fit(unsigned nunits, Header *p, Header *prevp)
 void *allocate(unsigned nunits, Header *p, Header *prevp){
       if (p->s.size == nunits)    /* exactly */
         prevp->s.ptr = p->s.ptr;
-      else {                        /* allocate tail end */
-        p->s.size -= nunits;    /* update free size */
-        p += p->s.size;       /* define a new header for allocated space */
-        p->s.size = nunits;     /* update a new header allocated size */
+      else {                      /* allocate tail end */
+        p->s.size -= nunits;      /* update free size */
+        p += p->s.size;           /* define a new header for allocated space */
+        p->s.size = nunits;       /* update a new header allocated size */
       }
       freep = prevp;
-      return (void *)(p+1);     /* return allocated space pointer, header excluded */
+      return (void *)(p+1);       /* return allocated space pointer, header excluded */
 }
