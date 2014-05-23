@@ -8,20 +8,26 @@
 #include <sys/mman.h>
 #include <limits.h> 
 
-#define NALLOC 1024                                     /* minimum #units to request */
+#define NALLOC 1024         /* minimum #units to request */
 
 #ifndef STRATEGY
 	#define STRATEGY 1
 #endif
 
-typedef long Align;                                     /* for alignment to long boundary */
+typedef long Align;         /* for alignment to long boundary */
 
-union header {                                          /* block header */
+/*
+ * Header for each free block, contains
+ * a record of the block size and a pointer
+ * to the next free block.
+ */
+union header {   /* block header */
   struct {
-    union header *ptr;                                  /* next block if on free list */
-    unsigned size;                                      /* size of this block  - what unit? */ 
+    union header *ptr;      /* next block if on free list */
+    unsigned size;          /* size of this block + header, measured 
+    						   in multiples of headervsize */ 
   } s;
-  Align x;                                              /* force alignment of blocks */
+  Align x;                  /* force alignment of blocks */
 };
 
 typedef union header Header;
